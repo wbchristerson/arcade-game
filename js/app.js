@@ -29,11 +29,26 @@ Enemy.prototype.render = function() {
 let Player = function() {
     this.sprite = 'images/char-boy.png';
     this.x = 200;
-    this.y = 420;
+    this.y = 395;
 };
 
 Player.prototype.update = function(dt) {
 
+};
+
+Player.prototype.handleInput = function(keyStroke) {
+  if ((keyStroke === 'left') && (this.x >= 90)) {
+    this.x -= 101;
+  }
+  else if ((keyStroke === 'right') && (this.x <= 400)) {
+    this.x += 101;
+  }
+  else if ((keyStroke === 'up') && (this.y >= 0)) {
+    this.y -= 83;
+  }
+  else if ((keyStroke === 'down') && (this.y <= 380)) {
+    this.y += 83;
+  }
 };
 
 Player.prototype.render = function() {
