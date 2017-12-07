@@ -28,8 +28,8 @@ Enemy.prototype.render = function() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 let Player = function() {
     this.sprite = 'images/char-boy.png';
-    this.x = 100;
-    
+    this.x = 200;
+    this.y = 420;
 };
 
 Player.prototype.update = function(dt) {
