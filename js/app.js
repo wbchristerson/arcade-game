@@ -19,7 +19,7 @@ Enemy.prototype.update = function(dt) {
   if (this.x > 505) {
     this.x = -1 * Math.floor(Math.random() * 100) - 100;
     this.y = (83 * (Math.floor(Math.random() * 3))) + 395 - (4 * 83);
-    this.speed = (Math.floor(Math.random() * 500)) + 1;
+    this.speed = (Math.floor(Math.random() * 500)) + 3;
   }
   this.x += dt * this.speed;
 };
@@ -42,7 +42,8 @@ let Player = function() {
 
 Player.prototype.update = function(dt) {
   for (let i = 0;i , i < allEnemies.length; i++) {
-    if (allEnemies[i].y === this.y) {
+    if ((allEnemies[i].y === this.y) &&
+        (Math.abs(allEnemies[i].x - this.x) <= 71)) {
       this.x = 200;
       this.y = 395;
       break;
