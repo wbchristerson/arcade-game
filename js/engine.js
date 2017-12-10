@@ -138,6 +138,9 @@ var Engine = (function(global) {
             }
         }
 
+        ctx.drawImage(Resources.get('images/Heart-Small.png'), 100, 550);
+        ctx.drawImage(Resources.get('images/Heart-Small.png'), 135, 550);
+        ctx.drawImage(Resources.get('images/Heart-Small.png'), 170, 550);
         renderEntities();
     }
 
@@ -173,7 +176,8 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/Heart-Small.png'
     ]);
     Resources.onReady(init);
 

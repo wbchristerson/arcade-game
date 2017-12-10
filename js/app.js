@@ -39,6 +39,8 @@ let Player = function() {
   this.x = 200;
   this.y = 395;
   this.level = 1;
+  this.points = 0;
+  this.collisions = 0;
 };
 
 Player.prototype.update = function(dt) {
