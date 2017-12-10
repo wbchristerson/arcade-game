@@ -19,7 +19,7 @@ Enemy.prototype.update = function(dt) {
   if (this.x > 505) {
     this.x = -1 * Math.floor(Math.random() * 100) - 100;
     this.y = (83 * (Math.floor(Math.random() * 3))) + 395 - (4 * 83);
-    this.speed = (Math.floor(Math.random() * 500)) + 3;
+    this.speed = (Math.floor(Math.random() * 500)) + 100;
   }
   this.x += dt * this.speed;
 };
