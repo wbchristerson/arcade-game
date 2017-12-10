@@ -38,17 +38,46 @@ let Player = function() {
   this.sprite = 'images/char-boy.png';
   this.x = 200;
   this.y = 395;
+  this.level = 1;
 };
 
 Player.prototype.update = function(dt) {
-  for (let i = 0;i , i < allEnemies.length; i++) {
+  for (let i = 0; i < allEnemies.length; i++) {
     if ((allEnemies[i].y === this.y) &&
         (Math.abs(allEnemies[i].x - this.x) <= 71)) {
       this.x = 200;
       this.y = 395;
       break;
     }
-  };
+  }
+  if (this.y <= 50) {
+    // console.log('hello');
+    this.x = 200;
+    this.y = 395;
+    this.level += 1;
+    // setTimeout(function() {
+    //   this.x = 200;
+    //   this.y = 395;
+    //   this.level += 1;
+    // }, 1000);
+    ///////////////////////////////////////////////////
+    // ctx.save(); // save current state
+    // ctx.rotate(0.15 * Math.PI); // rotate
+    // ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    // ctx.setTransform(1, 0, 0, 1, 0, 0);
+    // ctx.restore();
+    //ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    //ctx.restore(); // restore original states (no rotation etc)
+    // ctx.rotate(Math.PI);
+    // ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+    // ctx.rotate(Math.PI);
+    // ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height,
+    //               -this.width / 2, -this.height / 2, this.width, this.height);
+    // ctx.rotate(Math.PI);
+    // ctx.translate(-this.x - this.width / 2, -this.y - this.height / 2);
+    ///////////////////////////////////////////////////
+
+  }
 };
 
 Player.prototype.handleInput = function(keyStroke) {
@@ -68,6 +97,10 @@ Player.prototype.handleInput = function(keyStroke) {
 
 Player.prototype.render = function() {
   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+  // ctx.font = '18px serif';
+  ctx.font = '18px arial';
+  ctx.textAlign = 'left';
+  ctx.fillText('Level ' + this.level.toString(), 10, 576);
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
