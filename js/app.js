@@ -21,7 +21,7 @@ Enemy.prototype.update = function(dt) {
     this.y = (83 * (Math.floor(Math.random() * 3))) + 395 - (4 * 83);
     this.speed = (Math.floor(Math.random() * 500)) + 100;
   }
-  this.x += dt * this.speed;
+  // this.x += dt * this.speed;
 };
 
 // Draw the enemy on the screen, required method for game
@@ -43,9 +43,9 @@ let Player = function() {
   this.collisions = 0;
   this.atWater = false;
   this.pauseCounter = 0;
-  this.rockIds = [false, false, false];
+  this.rockIds = [false, false, false, false];
   this.rockCoors = [{xCoor: 0, yCoor: 0}, {xCoor: 0, yCoor: 0},
-                    {xCoor: 0, yCoor: 0}];
+                    {xCoor: 0, yCoor: 0}, {xCoor: 0, yCoor: 0}];
   this.score = 0;
 };
 
@@ -86,6 +86,11 @@ Player.prototype.update = function(dt) {
       else {
         this.rockIds[i] = false;
       }
+    }
+    if (this.level > 5) {
+      this.rockIds[3] = true;
+      this.rockCoors[3].xCoor = 404;
+      this.rockCoors[3].yCoor = 83 * (1 + Math.floor(3 * Math.random()));
     }
     this.score += 1;
   }
@@ -163,7 +168,7 @@ Player.prototype.render = function() {
   ctx.textAlign = 'left';
   ctx.fillText('Level ' + this.level.toString(), 10, 576);
   ctx.fillText('Score: ' + this.score.toString(), 410, 576);
-  for (let j = 0; j < 3; j++) {
+  for (let j = 0; j < this.rockIds.length; j++) {
     if (this.rockIds[j]) {
       ctx.drawImage(Resources.get('images/Rock.png'), this.rockCoors[j].xCoor,
                     this.rockCoors[j].yCoor - 30);
@@ -206,6 +211,7 @@ let Gem = function() {
   this.sprite = 'images/Gem_Blue_Small.png';
   this.mustSet = false;
   this.gemVal = 3;
+
 };
 
 Gem.prototype.render = function() {
@@ -226,7 +232,7 @@ Gem.prototype.update = function(dt) {
         this.x = 101 * Math.floor(5 * Math.random());
         this.y = 83 * (1 + Math.floor(3 * Math.random()));
         spaceOccupied = false;
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 4; i++) {
           if ((player.rockIds[i]) &&
             (player.rockCoors[i].xCoor === this.x) &&
             (player.rockCoors[i].yCoor === this.y)) {
@@ -240,7 +246,13 @@ Gem.prototype.update = function(dt) {
       this.y = 700;
     }
 
-    if ((5 <= gemRand) && (gemRand <= 7)) {
+
+    if (gemRand === 1) {
+      this.sprite = 'images/Star.png';
+      this.gemVal = 0;
+    }
+
+    else if ((5 <= gemRand) && (gemRand <= 7)) {
       this.sprite = 'images/Gem_Blue_Small.png';
       this.gemVal = 3;
     }
@@ -262,6 +274,9 @@ Gem.prototype.update = function(dt) {
     this.x = 0;
     this.y = 700;
     player.score += this.gemVal;
+    if (this.gemVal === 0) {
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    }
   }
 
   this.stepCounter += 1;

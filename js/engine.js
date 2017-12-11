@@ -192,7 +192,8 @@ var Engine = (function(global) {
         'images/Gem Green.png',
         'images/Gem_Green_Small.png',
         'images/Gem Orange.png',
-        'images/Gem_Orange_Small.png'
+        'images/Gem_Orange_Small.png',
+        'images/Star.png'
     ]);
     Resources.onReady(init);
 
