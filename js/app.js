@@ -47,6 +47,7 @@ let Player = function() {
   this.rockCoors = [{xCoor: 0, yCoor: 0}, {xCoor: 0, yCoor: 0},
                     {xCoor: 0, yCoor: 0}, {xCoor: 0, yCoor: 0}];
   this.score = 0;
+  this.health = 3;
 };
 
 Player.prototype.update = function(dt) {
@@ -57,6 +58,7 @@ Player.prototype.update = function(dt) {
             this.x = 200;
             this.y = 395;
             this.collisions += 1;
+            this.health -= 1;
             break;
           }
     }
@@ -162,6 +164,7 @@ Player.prototype.handleInput = function(keyStroke) {
       this.y += 83;
     }
   }
+
 };
 
 Player.prototype.render = function() {
@@ -197,9 +200,13 @@ HealthUnit.prototype.render = function() {
 };
 
 HealthUnit.prototype.update = function(dt) {
-  if (player.collisions >= 3-this.rank) {
-    this.y += 100;
+  if (player.health <= this.rank) {
+    this.y  = 650;
     this.inView = false;
+  }
+  else if (player.health > this.rank) {
+    this.inView = true;
+    this.y = 550;
   }
 };
 
@@ -232,6 +239,7 @@ Gem.prototype.update = function(dt) {
   if (this.mustSet) {
     let gemRand, spaceOccupied;
     gemRand = 1 + Math.floor(10 * Math.random());
+    // gemRand = 4;
     if (gemRand >= 4) {
     // if ((5 <= gemRand) && (gemRand <= 7)) {
     // if (gemRand <= 10) {
@@ -284,7 +292,8 @@ Gem.prototype.update = function(dt) {
     this.y = 700;
     player.score += this.gemVal;
     if (this.gemVal === 0) {
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      player.helath += 1;
+      // console.log('health: ' + player.health);
     }
   }
 
