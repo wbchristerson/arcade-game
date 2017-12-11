@@ -46,6 +46,7 @@ let Player = function() {
   this.rockIds = [false, false, false];
   this.rockCoors = [{xCoor: 0, yCoor: 0}, {xCoor: 0, yCoor: 0},
                     {xCoor: 0, yCoor: 0}];
+  this.score = 0;
 };
 
 Player.prototype.update = function(dt) {
@@ -86,6 +87,7 @@ Player.prototype.update = function(dt) {
         this.rockIds[i] = false;
       }
     }
+    this.score += 1;
   }
 
     ///////////////////////////////////////////////////
@@ -200,8 +202,9 @@ let Gem = function() {
   this.stepCounter = 0;
   this.x = 0;
   this.y = 700;
-  this.sprite = 'images/Gem Blue Small.png';
+  this.sprite = 'images/Gem_Blue_Small.png';
   this.mustSet = false;
+  this.gemVal = 3;
 };
 
 Gem.prototype.render = function() {
@@ -231,23 +234,33 @@ Gem.prototype.update = function(dt) {
         }
       }
     }
+
     else {
       this.y = 700;
     }
 
     if ((5 <= gemRand) && (gemRand <= 7)) {
       this.sprite = 'images/Gem_Blue_Small.png';
+      this.gemVal = 3;
     }
 
     else if ((8 <= gemRand) && (gemRand <= 9)) {
       this.sprite = 'images/Gem_Green_Small.png';
+      this.gemVal = 6;
     }
 
     else if (gemRand === 10) {
       this.sprite = 'images/Gem_Orange_Small.png';
+      this.gemVal = 9;
     }
 
     this.mustSet = false;
+  }
+
+  if (((player.x + 2) === this.x) && ((player.y + 20) === this.y)) {
+    this.x = 0;
+    this.y = 700;
+    player.score += this.gemVal;
   }
 
   this.stepCounter += 1;
