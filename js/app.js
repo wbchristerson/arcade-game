@@ -41,28 +41,36 @@ let Player = function() {
   this.level = 1;
   this.points = 0;
   this.collisions = 0;
+  this.atWater = false;
+  this.pauseCounter = 0;
 };
 
 Player.prototype.update = function(dt) {
-  for (let i = 0; i < allEnemies.length; i++) {
-    if ((allEnemies[i].y === this.y) &&
-        (Math.abs(allEnemies[i].x - this.x) <= 71)) {
-      this.x = 200;
-      this.y = 395;
-      this.collisions += 1;
-      break;
+  if (!this.atWater) {
+    for (let i = 0; i < allEnemies.length; i++) {
+      if ((allEnemies[i].y === this.y) &&
+          (Math.abs(allEnemies[i].x - this.x) <= 71)) {
+            this.x = 200;
+            this.y = 395;
+            this.collisions += 1;
+            break;
+          }
+    }
+    if (this.y <= 50) {
+      this.atWater = true;
     }
   }
-  if (this.y <= 50) {
-    // console.log('hello');
-    this.x = 200;
+  else if (this.pauseCounter < 30) {
+      this.pauseCounter++;
+  }
+  else {
+    this.atWater = false;
+    this.pauseCounter = 0;
+    this.x = 200
     this.y = 395;
     this.level += 1;
-    // setTimeout(function() {
-    //   this.x = 200;
-    //   this.y = 395;
-    //   this.level += 1;
-    // }, 1000);
+  }
+
     ///////////////////////////////////////////////////
     // ctx.save(); // save current state
     // ctx.rotate(0.15 * Math.PI); // rotate
@@ -79,8 +87,6 @@ Player.prototype.update = function(dt) {
     // ctx.rotate(Math.PI);
     // ctx.translate(-this.x - this.width / 2, -this.y - this.height / 2);
     ///////////////////////////////////////////////////
-
-  }
 };
 
 Player.prototype.handleInput = function(keyStroke) {
@@ -90,10 +96,10 @@ Player.prototype.handleInput = function(keyStroke) {
   else if ((keyStroke === 'right') && (this.x <= 400)) {
     this.x += 101;
   }
-  else if ((keyStroke === 'up') && (this.y >= 0)) {
+  else if ((!this.atWater) && (keyStroke === 'up') && (this.y >= 0)) {
     this.y -= 83;
   }
-  else if ((keyStroke === 'down') && (this.y <= 380)) {
+  else if ((!this.atWater) && (keyStroke === 'down') && (this.y <= 380)) {
     this.y += 83;
   }
 };
