@@ -21,7 +21,7 @@ Enemy.prototype.update = function(dt) {
     this.y = (83 * (Math.floor(Math.random() * 3))) + 395 - (4 * 83);
     this.speed = (Math.floor(Math.random() * 500)) + 100;
   }
-  // this.x += dt * this.speed;
+  this.x += dt * this.speed;
 };
 
 // Draw the enemy on the screen, required method for game
@@ -215,15 +215,21 @@ let Gem = function() {
 };
 
 Gem.prototype.render = function() {
-  ctx.drawImage(Resources.get(this.sprite), this.x + 20,
-                this.y + 60 - this.gemOffset);
+  if (this.gemVal !== 0) {
+    ctx.drawImage(Resources.get(this.sprite), this.x + 20,
+                  this.y + 60 - this.gemOffset);
+  }
+  else {
+    ctx.drawImage(Resources.get(this.sprite), this.x,
+                  this.y - 8 - this.gemOffset);
+  }
 };
 
 Gem.prototype.update = function(dt) {
   if (this.mustSet) {
     let gemRand, spaceOccupied;
     gemRand = 1 + Math.floor(10 * Math.random());
-    if (gemRand >= 5) {
+    if (gemRand >= 4) {
     // if ((5 <= gemRand) && (gemRand <= 7)) {
     // if (gemRand <= 10) {
       this.present = true;
@@ -247,7 +253,7 @@ Gem.prototype.update = function(dt) {
     }
 
 
-    if (gemRand === 1) {
+    if (gemRand === 4) {
       this.sprite = 'images/Star.png';
       this.gemVal = 0;
     }
