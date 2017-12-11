@@ -69,6 +69,9 @@ Player.prototype.update = function(dt) {
   }
   else {
     this.atWater = false;
+    for(let i = 0; i < 3; i++) {
+      allEnemies[i].x = 506;
+    }
     this.pauseCounter = 0;
     gem.mustSet = true;
     this.x = 200
