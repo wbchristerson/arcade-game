@@ -93,7 +93,11 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
+        // player.update();
         player.update();
+        for (let i = 0; i < health.length; i++) {
+          health[i].update();
+        }
     }
 
     /* This function initially draws the "game level", it will then call
@@ -138,9 +142,6 @@ var Engine = (function(global) {
             }
         }
 
-        ctx.drawImage(Resources.get('images/Heart-Small.png'), 100, 550);
-        ctx.drawImage(Resources.get('images/Heart-Small.png'), 135, 550);
-        ctx.drawImage(Resources.get('images/Heart-Small.png'), 170, 550);
         renderEntities();
     }
 
@@ -157,6 +158,10 @@ var Engine = (function(global) {
         });
 
         player.render();
+
+        health.forEach(function(healthUnit) {
+          healthUnit.render();
+        });
     }
 
     /* This function does nothing but it could have been a good place to

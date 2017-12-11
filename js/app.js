@@ -49,6 +49,7 @@ Player.prototype.update = function(dt) {
         (Math.abs(allEnemies[i].x - this.x) <= 71)) {
       this.x = 200;
       this.y = 395;
+      this.collisions += 1;
       break;
     }
   }
@@ -104,6 +105,29 @@ Player.prototype.render = function() {
   ctx.textAlign = 'left';
   ctx.fillText('Level ' + this.level.toString(), 10, 576);
 };
+
+
+let HealthUnit = function(xCoor, yCoor,rank) {
+  this.sprite = 'images/Heart-Small.png';
+  this.x = xCoor;
+  this.y = yCoor;
+  this.rank = rank;
+  this.inView = true;
+};
+
+HealthUnit.prototype.render = function() {
+  ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+HealthUnit.prototype.update = function(dt) {
+  if (player.collisions >= 3-this.rank) {
+    this.y += 100;
+    this.inView = false;
+  }
+};
+// ctx.drawImage(Resources.get('images/Heart-Small.png'), 100, 550);
+// ctx.drawImage(Resources.get('images/Heart-Small.png'), 135, 550);
+// ctx.drawImage(Resources.get('images/Heart-Small.png'), 170, 550);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Now instantiate your objects.
@@ -112,6 +136,8 @@ Player.prototype.render = function() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 let allEnemies = [new Enemy(), new Enemy(), new Enemy()];
 let player = new Player();
+let health = [new HealthUnit(100, 550, 0), new HealthUnit(135, 550, 1),
+              new HealthUnit(170, 550, 2)];
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
