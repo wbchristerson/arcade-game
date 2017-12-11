@@ -69,6 +69,7 @@ Player.prototype.update = function(dt) {
   else {
     this.atWater = false;
     this.pauseCounter = 0;
+    gem.mustSet = true;
     this.x = 200
     this.y = 395;
     this.level += 1;
@@ -165,6 +166,10 @@ Player.prototype.render = function() {
                     this.rockCoors[j].yCoor - 30);
     }
   }
+  // if (this.blueGemInfo.present) {
+  //   ctx.drawImage(Resources.get('images/Gem Blue.png'), this.blueGemInfo.xCoor,
+  //                 this.blueGemInfo.yCoor - 30 - this.gemOffset);
+  // }
 };
 
 
@@ -186,6 +191,84 @@ HealthUnit.prototype.update = function(dt) {
     this.inView = false;
   }
 };
+
+
+let Gem = function() {
+  this.present = false;
+  this.gemOffset = 0;
+  this.gemSign = 1;
+  this.stepCounter = 0;
+  this.x = 0;
+  this.y = 700;
+  this.sprite = 'images/Gem Blue Small.png';
+  this.mustSet = false;
+};
+
+Gem.prototype.render = function() {
+  ctx.drawImage(Resources.get(this.sprite), this.x + 20,
+                this.y + 60 - this.gemOffset);
+};
+
+Gem.prototype.update = function(dt) {
+  if (this.mustSet) {
+    let gemRand, spaceOccupied;
+    gemRand = 1 + Math.floor(10 * Math.random());
+    if (gemRand >= 5) {
+    // if ((5 <= gemRand) && (gemRand <= 7)) {
+    // if (gemRand <= 10) {
+      this.present = true;
+      spaceOccupied = true;
+      while (spaceOccupied) {
+        this.x = 101 * Math.floor(5 * Math.random());
+        this.y = 83 * (1 + Math.floor(3 * Math.random()));
+        spaceOccupied = false;
+        for (let i = 0; i < 3; i++) {
+          if ((player.rockIds[i]) &&
+            (player.rockCoors[i].xCoor === this.x) &&
+            (player.rockCoors[i].yCoor === this.y)) {
+            spaceOccupied = true;
+          }
+        }
+      }
+    }
+    else {
+      this.y = 700;
+    }
+
+    if ((5 <= gemRand) && (gemRand <= 7)) {
+      this.sprite = 'images/Gem_Blue_Small.png';
+    }
+
+    else if ((8 <= gemRand) && (gemRand <= 9)) {
+      this.sprite = 'images/Gem_Green_Small.png';
+    }
+
+    else if (gemRand === 10) {
+      this.sprite = 'images/Gem_Orange_Small.png';
+    }
+
+    this.mustSet = false;
+  }
+
+  this.stepCounter += 1;
+  if (this.stepCounter === 5) {
+    this.stepCounter = 0;
+    this.gemOffset += this.gemSign;
+    if (this.gemOffset === 11) {
+      this.gemOffset = 9;
+      this.gemSign *= -1;
+    }
+    if (this.gemOffset === -1) {
+      this.gemOffset = 1;
+      this.gemSign *= -1;
+    }
+  }
+
+};
+
+
+
+
 // ctx.drawImage(Resources.get('images/Heart-Small.png'), 100, 550);
 // ctx.drawImage(Resources.get('images/Heart-Small.png'), 135, 550);
 // ctx.drawImage(Resources.get('images/Heart-Small.png'), 170, 550);
@@ -199,6 +282,7 @@ let allEnemies = [new Enemy(), new Enemy(), new Enemy()];
 let player = new Player();
 let health = [new HealthUnit(100, 550, 0), new HealthUnit(135, 550, 1),
               new HealthUnit(170, 550, 2)];
+let gem = new Gem();
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 

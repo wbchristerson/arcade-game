@@ -98,6 +98,7 @@ var Engine = (function(global) {
         for (let i = 0; i < health.length; i++) {
           health[i].update();
         }
+        gem.update();
     }
 
     /* This function initially draws the "game level", it will then call
@@ -162,6 +163,8 @@ var Engine = (function(global) {
         health.forEach(function(healthUnit) {
           healthUnit.render();
         });
+
+        gem.render();
     }
 
     /* This function does nothing but it could have been a good place to
@@ -183,7 +186,13 @@ var Engine = (function(global) {
         'images/enemy-bug.png',
         'images/char-boy.png',
         'images/Heart-Small.png',
-        'images/Rock.png'
+        'images/Rock.png',
+        'images/Gem Blue.png',
+        'images/Gem_Blue_Small.png',
+        'images/Gem Green.png',
+        'images/Gem_Green_Small.png',
+        'images/Gem Orange.png',
+        'images/Gem_Orange_Small.png'
     ]);
     Resources.onReady(init);
 
