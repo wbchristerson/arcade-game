@@ -162,6 +162,7 @@ Player.prototype.render = function() {
   ctx.font = '18px arial';
   ctx.textAlign = 'left';
   ctx.fillText('Level ' + this.level.toString(), 10, 576);
+  ctx.fillText('Score: ' + this.score.toString(), 410, 576);
   for (let j = 0; j < 3; j++) {
     if (this.rockIds[j]) {
       ctx.drawImage(Resources.get('images/Rock.png'), this.rockCoors[j].xCoor,
