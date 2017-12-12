@@ -33,7 +33,6 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 let Player = function() {
   this.sprite = 'images/char-boy.png';
   this.x = 200;
@@ -47,7 +46,7 @@ let Player = function() {
   this.rockCoors = [{xCoor: 0, yCoor: 0}, {xCoor: 0, yCoor: 0},
                     {xCoor: 0, yCoor: 0}, {xCoor: 0, yCoor: 0}];
   this.score = 0;
-  this.health = 3;
+  this.lives = 3;
 };
 
 Player.prototype.update = function(dt) {
@@ -58,7 +57,13 @@ Player.prototype.update = function(dt) {
             this.x = 200;
             this.y = 395;
             this.collisions += 1;
-            this.health -= 1;
+            if (this.lives === 1) {
+              console.log("Game Over"); /////////////////////////////////////////////////////////////////////////////////////////////////
+            }
+            else if (this.lives > 1) {
+              this.lives -= 1;
+              health.pop();
+            }
             break;
           }
     }
@@ -180,10 +185,6 @@ Player.prototype.render = function() {
                     this.rockCoors[j].yCoor - 30);
     }
   }
-  // if (this.blueGemInfo.present) {
-  //   ctx.drawImage(Resources.get('images/Gem Blue.png'), this.blueGemInfo.xCoor,
-  //                 this.blueGemInfo.yCoor - 30 - this.gemOffset);
-  // }
 };
 
 
@@ -200,14 +201,16 @@ HealthUnit.prototype.render = function() {
 };
 
 HealthUnit.prototype.update = function(dt) {
-  if (player.health <= this.rank) {
+  /*
+  if (player.lives <= this.rank) {
     this.y  = 650;
     this.inView = false;
   }
-  else if (player.health > this.rank) {
+  else if (player.lives > this.rank) {
     this.inView = true;
     this.y = 550;
   }
+  */
 };
 
 
@@ -292,8 +295,8 @@ Gem.prototype.update = function(dt) {
     this.y = 700;
     player.score += this.gemVal;
     if (this.gemVal === 0) {
-      player.helath += 1;
-      // console.log('health: ' + player.health);
+      player.lives += 1;
+      health.push(new HealthUnit(65 + 35 * player.lives, 550, player.lives - 1));
     }
   }
 
@@ -314,23 +317,15 @@ Gem.prototype.update = function(dt) {
 };
 
 
-
-
-// ctx.drawImage(Resources.get('images/Heart-Small.png'), 100, 550);
-// ctx.drawImage(Resources.get('images/Heart-Small.png'), 135, 550);
-// ctx.drawImage(Resources.get('images/Heart-Small.png'), 170, 550);
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 let allEnemies = [new Enemy(), new Enemy(), new Enemy()];
 let player = new Player();
 let health = [new HealthUnit(100, 550, 0), new HealthUnit(135, 550, 1),
               new HealthUnit(170, 550, 2)];
 let gem = new Gem();
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 // This listens for key presses and sends the keys to your
