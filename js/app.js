@@ -58,7 +58,7 @@ Player.prototype.update = function(dt) {
             this.y = 395;
             this.collisions += 1;
             if (this.lives === 1) {
-              console.log("Game Over"); /////////////////////////////////////////////////////////////////////////////////////////////////
+              // console.log("Game Over"); /////////////////////////////////////////////////////////////////////////////////////////////////
             }
             else if (this.lives > 1) {
               this.lives -= 1;
@@ -72,6 +72,12 @@ Player.prototype.update = function(dt) {
     }
   }
   else if (this.pauseCounter < 60) {
+      if (this.pauseCounter === 0) {
+        gem.scoreX = this.x;
+        gem.scoreY = this.y + 200;
+        gem.score = 1;
+        gem.announceScore = 0;
+      }
       this.pauseCounter++;
   }
   else {
@@ -224,6 +230,11 @@ let Gem = function() {
   this.sprite = 'images/Gem_Blue_Small.png';
   this.mustSet = false;
   this.gemVal = 3;
+  // scoring stuff
+  this.scoreX = 0;
+  this.scoreY = 700;
+  this.score = 3;
+  this.announceScore = 70;
 
 };
 
@@ -236,7 +247,23 @@ Gem.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x,
                   this.y - 8 - this.gemOffset);
   }
+  if (this.announceScore < 70) {
+    this.announceScore += 1;
+    ctx.fillText('+' + this.score.toString(), this.scoreX,
+                 this.scoreY - this.announceScore);
+  }
 };
+
+
+// Gem.prototype.listScore = function() {
+//   if (this.announceScore < 1000) {
+//     console.log(this.scoreX);
+//     this.announceScore += 1;
+//     ctx.fillText(this.score.toString(), this.scoreX,
+//                   this.scoreY - this.announceScore);
+//   }
+// }
+
 
 Gem.prototype.update = function(dt) {
   if (this.mustSet) {
@@ -291,13 +318,19 @@ Gem.prototype.update = function(dt) {
   }
 
   if (((player.x + 2) === this.x) && ((player.y + 20) === this.y)) {
-    this.x = 0;
-    this.y = 700;
-    player.score += this.gemVal;
-    if (this.gemVal === 0) {
+    if (this.gemVal !== 0) {
+      gem.scoreX = this.x;
+      gem.scoreY = this.y;
+      gem.score = this.gemVal;
+      gem.announceScore = 0;
+      player.score += this.gemVal;
+    }
+    else {
       player.lives += 1;
       health.push(new HealthUnit(65 + 35 * player.lives, 550, player.lives - 1));
     }
+    this.x = 0;
+    this.y = 700;
   }
 
   this.stepCounter += 1;
@@ -314,6 +347,7 @@ Gem.prototype.update = function(dt) {
     }
   }
 
+  // this.listScore();
 };
 
 
