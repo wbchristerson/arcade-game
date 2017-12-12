@@ -126,7 +126,7 @@ Player.prototype.update = function(dt) {
 Player.prototype.handleInput = function(keyStroke) {
   let availableSpot = true;
   if ((keyStroke === 'left') && (this.x >= 90)) {
-    for (let k = 0; k < 3; k++) {
+    for (let k = 0; k < 4; k++) {
       if ((this.rockIds[k]) && ((this.x - 99) === this.rockCoors[k].xCoor) &&
           ((this.y + 20) === this.rockCoors[k].yCoor)) {
         availableSpot = false;
@@ -137,7 +137,7 @@ Player.prototype.handleInput = function(keyStroke) {
     }
   }
   else if ((keyStroke === 'right') && (this.x <= 400)) {
-    for (let k = 0; k < 3; k++) {
+    for (let k = 0; k < 4; k++) {
       if ((this.rockIds[k]) && ((this.x + 103) === this.rockCoors[k].xCoor) &&
           ((this.y + 20) === this.rockCoors[k].yCoor)) {
         availableSpot = false;
@@ -148,7 +148,7 @@ Player.prototype.handleInput = function(keyStroke) {
     }
   }
   else if ((!this.atWater) && (keyStroke === 'up') && (this.y >= 0)) {
-    for (let k = 0; k < 3; k++) {
+    for (let k = 0; k < 4; k++) {
       if ((this.rockIds[k]) && ((this.x + 2) === this.rockCoors[k].xCoor) &&
           ((this.y - 63) === this.rockCoors[k].yCoor)) {
             availableSpot = false;
@@ -159,7 +159,7 @@ Player.prototype.handleInput = function(keyStroke) {
     }
   }
   else if ((!this.atWater) && (keyStroke === 'down') && (this.y <= 380)) {
-    for (let k = 0; k < 3; k++) {
+    for (let k = 0; k < 4; k++) {
       if ((this.rockIds[k]) && ((this.x + 2) === this.rockCoors[k].xCoor) &&
           ((this.y + 103) === this.rockCoors[k].yCoor)) {
             availableSpot = false;

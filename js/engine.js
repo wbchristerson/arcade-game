@@ -172,6 +172,7 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
+        ctx.fillText('Game Over', 200, 200);
         // noop
     }
 
