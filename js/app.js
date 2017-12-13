@@ -21,7 +21,9 @@ Enemy.prototype.update = function(dt) {
     this.y = (83 * (Math.floor(Math.random() * 3))) + 395 - (4 * 83);
     this.speed = (Math.floor(Math.random() * 500)) + 100;
   }
-  this.x += dt * this.speed;
+  if (player.gamePage) {
+    this.x += dt * this.speed;
+  }
 };
 
 // Draw the enemy on the screen, required method for game
@@ -48,6 +50,7 @@ let Player = function() {
   this.score = 0;
   this.lives = 3;
   this.levelAlarm = 120; // for announcing level 5, 10, 15, ...
+  this.gamePage = false; // set game page rather than introductory page
 };
 
 Player.prototype.update = function(dt) {
@@ -116,28 +119,11 @@ Player.prototype.update = function(dt) {
       this.levelAlarm = 0;
     }
   }
-
-    ///////////////////////////////////////////////////
-    // ctx.save(); // save current state
-    // ctx.rotate(0.15 * Math.PI); // rotate
-    // ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    // ctx.setTransform(1, 0, 0, 1, 0, 0);
-    // ctx.restore();
-    //ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    //ctx.restore(); // restore original states (no rotation etc)
-    // ctx.rotate(Math.PI);
-    // ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
-    // ctx.rotate(Math.PI);
-    // ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height,
-    //               -this.width / 2, -this.height / 2, this.width, this.height);
-    // ctx.rotate(Math.PI);
-    // ctx.translate(-this.x - this.width / 2, -this.y - this.height / 2);
-    ///////////////////////////////////////////////////
 };
 
 Player.prototype.handleInput = function(keyStroke) {
   let availableSpot = true;
-  if ((keyStroke === 'left') && (this.x >= 90)) {
+  if ((keyStroke === 'left') && (this.x >= 90) && this.gamePage) {
     for (let k = 0; k < 4; k++) {
       if ((this.rockIds[k]) && ((this.x - 99) === this.rockCoors[k].xCoor) &&
           ((this.y + 20) === this.rockCoors[k].yCoor)) {
@@ -148,7 +134,7 @@ Player.prototype.handleInput = function(keyStroke) {
       this.x -= 101;
     }
   }
-  else if ((keyStroke === 'right') && (this.x <= 400)) {
+  else if ((keyStroke === 'right') && (this.x <= 400) && this.gamePage) {
     for (let k = 0; k < 4; k++) {
       if ((this.rockIds[k]) && ((this.x + 103) === this.rockCoors[k].xCoor) &&
           ((this.y + 20) === this.rockCoors[k].yCoor)) {
@@ -159,7 +145,8 @@ Player.prototype.handleInput = function(keyStroke) {
       this.x += 101;
     }
   }
-  else if ((!this.atWater) && (keyStroke === 'up') && (this.y >= 0)) {
+  else if ((!this.atWater) && (keyStroke === 'up') && (this.y >= 0) &&
+            this.gamePage) {
     for (let k = 0; k < 4; k++) {
       if ((this.rockIds[k]) && ((this.x + 2) === this.rockCoors[k].xCoor) &&
           ((this.y - 63) === this.rockCoors[k].yCoor)) {
@@ -182,6 +169,10 @@ Player.prototype.handleInput = function(keyStroke) {
     }
   }
 
+  else if ((!this.gamePage) && (keyStroke === 'space')) {
+    this.gamePage = true;
+  }
+
 };
 
 Player.prototype.render = function() {
@@ -189,8 +180,10 @@ Player.prototype.render = function() {
   // ctx.font = '18px serif';
   ctx.font = '18px arial';
   ctx.textAlign = 'left';
-  ctx.fillText('Level ' + this.level.toString(), 10, 576);
-  ctx.fillText('Score: ' + this.score.toString(), 410, 576);
+  if (this.gamePage) {
+    ctx.fillText('Level ' + this.level.toString(), 10, 576);
+    ctx.fillText('Score: ' + this.score.toString(), 410, 576);
+  }
   for (let j = 0; j < this.rockIds.length; j++) {
     if (this.rockIds[j]) {
       ctx.drawImage(Resources.get('images/Rock.png'), this.rockCoors[j].xCoor,
@@ -200,10 +193,48 @@ Player.prototype.render = function() {
   if (this.levelAlarm < 120) {
     ctx.font = '36px bold arial';
     ctx.fillStyle = '#ff0000';  //<======= here
-    ctx.fillText('You Have Reached Level ' + this.level.toString() + '!', 60,
+    ctx.fillText('You Have Reached Level ' + this.level.toString() + '!', 50,
                  200 + this.levelAlarm);
     this.levelAlarm += 1;
     ctx.fillStyle = 'black';
+  }
+
+  if (!this.gamePage) {
+    // ctx.fillStyle = 'blue';
+    var my_gradient=ctx.createLinearGradient(0,100,505,300);
+    my_gradient.addColorStop(0,'#4286f4');
+    // my_gradient.addColorStop(0.5,"red");
+    my_gradient.addColorStop(1,'#3de534');
+    // my_gradient.addColorStop(1,'#29dee8');
+
+    ctx.fillStyle=my_gradient;
+    // ctx.fillStyle = linear-gradient(160deg, #02ccba 0%, #aa7ecd 100%);
+    // ctx.fillRect(0, 100, 505, 300);
+    ctx.fillRect(0, 0, 505, 606);
+    ctx.fillStyle = 'black';
+    ctx.fillText('Welcome To Frogger!', 160, 110);
+    ctx.fillText('Use the arrow keys to traverse the board and reach', 30, 150);
+    ctx.fillText('the water at the opposite side but beware of oncoming', 30, 170);
+    ctx.fillText('enemy bugs! You may collect gems for points and stars', 30, 190);
+    ctx.fillText('for additional lives. There are 15 levels. Good luck!', 30, 210);
+
+    ctx.fillText('Press the following keys at any time to change your', 30, 250);
+    ctx.fillText('character to the corresponding avatar.', 30, 270);
+
+    ctx.fillText('q', 45, 310);
+    ctx.fillText('w', 146, 310);
+    ctx.fillText('e', 247, 310);
+    ctx.fillText('r', 348, 310);
+    ctx.fillText('t', 449, 310);
+
+    ctx.drawImage(Resources.get('images/char-boy.png'), 0, 270 + gem.gemOffset);
+    ctx.drawImage(Resources.get('images/char-cat-girl.png'), 101, 270 + gem.gemOffset);
+    ctx.drawImage(Resources.get('images/char-horn-girl.png'), 202, 270 + gem.gemOffset);
+    ctx.drawImage(Resources.get('images/char-pink-girl.png'), 303, 270 + gem.gemOffset);
+    ctx.drawImage(Resources.get('images/char-princess-girl.png'), 404, 270 + gem.gemOffset);
+
+    ctx.fillText('Press "space" to begin.', 160, 480);
+
   }
 };
 
@@ -217,7 +248,9 @@ let HealthUnit = function(xCoor, yCoor,rank) {
 };
 
 HealthUnit.prototype.render = function() {
-  ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+  if (player.gamePage) {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+  }
 };
 
 HealthUnit.prototype.update = function(dt) {
@@ -284,7 +317,7 @@ Gem.prototype.update = function(dt) {
     let gemRand, spaceOccupied;
     gemRand = 1 + Math.floor(10 * Math.random());
     // gemRand = 4;
-    if (gemRand >= 4) {
+    if (gemRand >= 3) {
     // if ((5 <= gemRand) && (gemRand <= 7)) {
     // if (gemRand <= 10) {
       this.present = true;
@@ -308,7 +341,7 @@ Gem.prototype.update = function(dt) {
     }
 
 
-    if (gemRand === 4) {
+    if ((gemRand === 3) || (gemRand === 4)) {
       this.sprite = 'images/Star.png';
       this.gemVal = 0;
     }
@@ -380,6 +413,7 @@ let gem = new Gem();
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
   var allowedKeys = {
+      32: 'space',
       37: 'left',
       38: 'up',
       39: 'right',
