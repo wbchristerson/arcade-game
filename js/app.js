@@ -126,7 +126,7 @@ Player.prototype.update = function(dt) {
       this.levelAlarm = 0;
     }
 
-    if (this.level === 6) {
+    if (this.level === 16) {
       this.gamePage = false;
       this.endPage = true;
       this.win = true;
