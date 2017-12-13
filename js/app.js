@@ -40,8 +40,6 @@ let Player = function() {
   this.x = 200;
   this.y = 395;
   this.level = 1;
-  this.points = 0;
-  this.collisions = 0;
   this.atWater = false;
   this.pauseCounter = 0;
   this.rockIds = [false, false, false, false];
@@ -50,7 +48,9 @@ let Player = function() {
   this.score = 0;
   this.lives = 3;
   this.levelAlarm = 120; // for announcing level 5, 10, 15, ...
-  this.gamePage = false; // set game page rather than introductory page
+  this.introPage = true; // set introductory page
+  this.gamePage = false; // set game page
+  this.endPage = false; // set end page
 };
 
 Player.prototype.update = function(dt) {
@@ -60,14 +60,15 @@ Player.prototype.update = function(dt) {
           (Math.abs(allEnemies[i].x - this.x) <= 71)) {
             this.x = 200;
             this.y = 395;
-            this.collisions += 1;
             this.lives -= 1;
-            // if (this.lives === 0) {
-              // reset();
-              // console.log("Game Over"); /////////////////////////////////////////////////////////////////////////////////////////////////
-            // }
-            if (this.lives > 0) {
-              health.pop();
+            health.pop();
+            if (this.lives === 0) {
+              this.gamePage = false;
+              this.score = 0;
+              this.lives = 3;
+              health.push(new HealthUnit(100, 550, 0));
+              health.push(new HealthUnit(135, 550, 1));
+              health.push(new HealthUnit(170, 550, 2));
             }
             break;
           }
@@ -169,7 +170,8 @@ Player.prototype.handleInput = function(keyStroke) {
     }
   }
 
-  else if ((!this.gamePage) && (keyStroke === 'space')) {
+  else if (this.introPage && (keyStroke === 'space')) {
+    this.introPage = false;
     this.gamePage = true;
   }
 
@@ -218,7 +220,7 @@ Player.prototype.render = function() {
     ctx.fillStyle = 'black';
   }
 
-  if (!this.gamePage) {
+  if (this.introPage) {
     // ctx.fillStyle = 'blue';
     var my_gradient=ctx.createLinearGradient(0,100,505,300);
     my_gradient.addColorStop(0,'#4286f4');
