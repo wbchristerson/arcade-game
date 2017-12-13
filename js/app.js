@@ -64,11 +64,7 @@ Player.prototype.update = function(dt) {
             health.pop();
             if (this.lives === 0) {
               this.gamePage = false;
-              this.score = 0;
-              this.lives = 3;
-              health.push(new HealthUnit(100, 550, 0));
-              health.push(new HealthUnit(135, 550, 1));
-              health.push(new HealthUnit(170, 550, 2));
+              this.endPage = true;
             }
             break;
           }
@@ -175,6 +171,34 @@ Player.prototype.handleInput = function(keyStroke) {
     this.gamePage = true;
   }
 
+  else if (this.endPage && (keyStroke === 'space')) {
+    this.score = 0;
+    this.lives = 3;
+    this.level = 1;
+    health.push(new HealthUnit(100, 550, 0));
+    health.push(new HealthUnit(135, 550, 1));
+    health.push(new HealthUnit(170, 550, 2));
+    this.endPage = false;
+    this.gamePage = true;
+    for(let i = 0; i < 3; i++) {
+      allEnemies[i].x = 506;
+    }
+  }
+
+  else if (this.endPage && (keyStroke === 'x')) {
+    this.endPage = false;
+    this.introPage = true;
+    this.score = 0;
+    this.lives = 3;
+    this.level = 1;
+    health.push(new HealthUnit(100, 550, 0));
+    health.push(new HealthUnit(135, 550, 1));
+    health.push(new HealthUnit(170, 550, 2));
+    for(let i = 0; i < 3; i++) {
+      allEnemies[i].x = 506;
+    }
+  }
+
   else if (keyStroke === 'q') {
     this.sprite = 'images/char-boy.png';
   }
@@ -220,7 +244,7 @@ Player.prototype.render = function() {
     ctx.fillStyle = 'black';
   }
 
-  if (this.introPage) {
+  if (this.introPage || this.endPage) {
     // ctx.fillStyle = 'blue';
     var my_gradient=ctx.createLinearGradient(0,100,505,300);
     my_gradient.addColorStop(0,'#4286f4');
@@ -233,6 +257,9 @@ Player.prototype.render = function() {
     // ctx.fillRect(0, 100, 505, 300);
     ctx.fillRect(0, 0, 505, 606);
     ctx.fillStyle = 'black';
+  }
+
+  if (this.introPage) {
     ctx.fillText('Welcome To Frogger!', 160, 110);
     ctx.fillText('Use the arrow keys to traverse the board and reach', 30, 150);
     ctx.fillText('the water at the opposite side but beware of oncoming', 30, 170);
@@ -255,8 +282,14 @@ Player.prototype.render = function() {
     ctx.drawImage(Resources.get('images/char-princess-girl.png'), 404, 270 + gem.gemOffset);
 
     ctx.fillText('Press "space" to begin.', 160, 480);
-
   }
+
+  if (this.endPage) {
+    ctx.fillText('Wow! You got to level ' + this.level + ' with ' + this.score + ' points.', 100, 110);
+    ctx.fillText('Press "space" to play again. Press "x" to return to the', 30, 180);
+    ctx.fillText('start menu.', 30, 200);
+  }
+
 };
 
 
@@ -443,7 +476,8 @@ document.addEventListener('keyup', function(e) {
       87: 'w',
       69: 'e',
       82: 'r',
-      84: 't'
+      84: 't',
+      88: 'x'
   };
 
   player.handleInput(allowedKeys[e.keyCode]);
