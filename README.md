@@ -1,6 +1,18 @@
-frontend-nanodegree-arcade-game
-===============================
+# Frogger
 
-Students should use this [rubric](https://review.udacity.com/#!/projects/2696458597/rubric) for self-checking their submission. Make sure the functions you write are **object-oriented** - either class functions (like Player and Enemy) or class prototype functions such as Enemy.prototype.checkCollisions, and that the keyword 'this' is used appropriately within your class and class prototype functions to refer to the object the function is called upon. Also be sure that the **readme.md** file is updated with your instructions on both how to 1. Run and 2. Play your arcade game.
+### Running The Application
 
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
+### Structure
+* The game includes 15 levels in which the user must traverse a path which contains enemies.
+* The user traverses the board using the arrow keys
+* When the user comes in contact with an enemy, he/she loses a life and returns to the start of the level at the default position on screen.
+* The user can also collect gems (of varying point values) and stars (which give extra lives).
+* If the user loses all lives, then the game ends in a loss. If the user completes all 15 levels with at least one life left, then the game ends in a win.
+* When the game ends, the player may then play again or return to the introductory page.
+
+### Design
+The game begins with an introductory page explaining how to play. It also lists the possible avatars for the user, along with the keys to be pressed to switch to those avatars. The player begins by pressing the "space" key.
+
+### Personal Programming Details
+
+### Remaining Issues
