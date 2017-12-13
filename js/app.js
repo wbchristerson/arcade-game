@@ -47,6 +47,7 @@ let Player = function() {
                     {xCoor: 0, yCoor: 0}, {xCoor: 0, yCoor: 0}];
   this.score = 0;
   this.lives = 3;
+  this.levelAlarm = 120; // for announcing level 5, 10, 15, ...
 };
 
 Player.prototype.update = function(dt) {
@@ -57,11 +58,12 @@ Player.prototype.update = function(dt) {
             this.x = 200;
             this.y = 395;
             this.collisions += 1;
-            if (this.lives === 1) {
+            this.lives -= 1;
+            // if (this.lives === 0) {
+              // reset();
               // console.log("Game Over"); /////////////////////////////////////////////////////////////////////////////////////////////////
-            }
-            else if (this.lives > 1) {
-              this.lives -= 1;
+            // }
+            if (this.lives > 0) {
               health.pop();
             }
             break;
@@ -109,6 +111,10 @@ Player.prototype.update = function(dt) {
       this.rockCoors[3].yCoor = 83 * (1 + Math.floor(3 * Math.random()));
     }
     this.score += 1;
+
+    if ((this.level % 5) === 0) {
+      this.levelAlarm = 0;
+    }
   }
 
     ///////////////////////////////////////////////////
@@ -190,6 +196,14 @@ Player.prototype.render = function() {
       ctx.drawImage(Resources.get('images/Rock.png'), this.rockCoors[j].xCoor,
                     this.rockCoors[j].yCoor - 30);
     }
+  }
+  if (this.levelAlarm < 120) {
+    ctx.font = '36px bold arial';
+    ctx.fillStyle = '#ff0000';  //<======= here
+    ctx.fillText('You Have Reached Level ' + this.level.toString() + '!', 60,
+                 200 + this.levelAlarm);
+    this.levelAlarm += 1;
+    ctx.fillStyle = 'black';
   }
 };
 
