@@ -173,6 +173,25 @@ Player.prototype.handleInput = function(keyStroke) {
     this.gamePage = true;
   }
 
+  else if (keyStroke === 'q') {
+    this.sprite = 'images/char-boy.png';
+  }
+
+  else if (keyStroke === 'w') {
+    this.sprite = 'images/char-cat-girl.png';
+  }
+
+  else if (keyStroke === 'e') {
+    this.sprite = 'images/char-horn-girl.png';
+  }
+
+  else if (keyStroke === 'r') {
+    this.sprite = 'images/char-pink-girl.png';
+  }
+
+  else if (keyStroke === 't') {
+    this.sprite = 'images/char-princess-girl.png';
+  }
 };
 
 Player.prototype.render = function() {
@@ -417,7 +436,12 @@ document.addEventListener('keyup', function(e) {
       37: 'left',
       38: 'up',
       39: 'right',
-      40: 'down'
+      40: 'down',
+      81: 'q',
+      87: 'w',
+      69: 'e',
+      82: 'r',
+      84: 't'
   };
 
   player.handleInput(allowedKeys[e.keyCode]);
