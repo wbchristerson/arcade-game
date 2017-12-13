@@ -51,6 +51,9 @@ let Player = function() {
   this.introPage = true; // set introductory page
   this.gamePage = false; // set game page
   this.endPage = false; // set end page
+  // cases for ending the game as a win or loss
+  this.win = false;
+  this.lose = true;
 };
 
 Player.prototype.update = function(dt) {
@@ -65,6 +68,13 @@ Player.prototype.update = function(dt) {
             if (this.lives === 0) {
               this.gamePage = false;
               this.endPage = true;
+              this.lose = true;
+              gem.x = 0;
+              gem.y = 700;
+              this.rockIds[0] = false;
+              this.rockIds[1] = false;
+              this.rockIds[2] = false;
+              this.rockIds[3] = false;
             }
             break;
           }
@@ -115,6 +125,21 @@ Player.prototype.update = function(dt) {
     if ((this.level % 5) === 0) {
       this.levelAlarm = 0;
     }
+
+    if (this.level === 6) {
+      this.gamePage = false;
+      this.endPage = true;
+      this.win = true;
+      gem.mustSet = false;
+      gem.x = 0;
+      gem.y = 700;
+      health = [];
+      this.rockIds[0] = false;
+      this.rockIds[1] = false;
+      this.rockIds[2] = false;
+      this.rockIds[3] = false;
+    }
+
   }
 };
 
@@ -169,6 +194,8 @@ Player.prototype.handleInput = function(keyStroke) {
   else if (this.introPage && (keyStroke === 'space')) {
     this.introPage = false;
     this.gamePage = true;
+    this.win = false;
+    this.lose = false;
   }
 
   else if (this.endPage && (keyStroke === 'space')) {
@@ -183,6 +210,8 @@ Player.prototype.handleInput = function(keyStroke) {
     for(let i = 0; i < 3; i++) {
       allEnemies[i].x = 506;
     }
+    this.lose = false;
+    this.win = false;
   }
 
   else if (this.endPage && (keyStroke === 'x')) {
@@ -242,6 +271,7 @@ Player.prototype.render = function() {
                  200 + this.levelAlarm);
     this.levelAlarm += 1;
     ctx.fillStyle = 'black';
+    ctx.font = '18px arial';
   }
 
   if (this.introPage || this.endPage) {
@@ -284,8 +314,15 @@ Player.prototype.render = function() {
     ctx.fillText('Press "space" to begin.', 160, 480);
   }
 
-  if (this.endPage) {
+  if (this.endPage && this.lose) {
     ctx.fillText('Wow! You got to level ' + this.level + ' with ' + this.score + ' points.', 100, 110);
+  }
+
+  if (this.endPage && this.win) {
+    ctx.fillText('Congratulations! You won with ' + this.score + ' points.', 80, 110);
+  }
+
+  if (this.endPage) {
     ctx.fillText('Press "space" to play again. Press "x" to return to the', 30, 180);
     ctx.fillText('start menu.', 30, 200);
   }
