@@ -1,6 +1,6 @@
 # Frogger
 
-![Frogger Sample Screenshot](images/general-game.png)
+<p align="center">![Frogger Sample Screenshot](images/general-game.png)</p>
 
 ### Running The Application
 
@@ -15,6 +15,10 @@
 ### Design
 The game begins with an introductory page explaining how to play. It also lists the possible avatars for the user, along with the keys to be pressed to switch to those avatars. The player begins by pressing the "space" key.
 
+![Frogger Introductory Page](images/intro-page.png)
+
 ### Personal Programming Details
 
 ### Remaining Issues
+* The gems which appear in various levels are from image files which are rectangular, whereas the gems themselves have octagonal shapes. This makes the shapes appear incorrectly in the game.
+*
