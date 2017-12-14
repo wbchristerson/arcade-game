@@ -1,6 +1,6 @@
 # Frogger
 
-<p align="center">![Frogger Sample Screenshot](images/general-game.png)</p>
+![Frogger Sample Screenshot](images/general-game.png)
 
 ### Running The Application
 
