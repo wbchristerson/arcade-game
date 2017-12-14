@@ -6,6 +6,12 @@
 
 ### Running The Application
 
+* Click the green "Clone or download" button above then choose "Download ZIP".
+* Find the folder `arcade-game-master` in your Downloads folder or wherever it was placed on your device.
+* Right click and choose "Extract All".
+* Open your browser and use `Ctrl + O` to open the file selector on your device.
+* Go to `arcade-game-master`, enter `arcade-game-master` again, then select `index.html`. The game screen will appear.
+
 ### Structure
 * The game includes 15 levels in which the user must traverse a crossing which contains enemies.
 * The user traverses the board using the arrow keys.
