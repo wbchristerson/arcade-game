@@ -5,12 +5,11 @@
 </p>
 
 ### Running The Application
-
-* [Here](https://wbchristerson.github.io/arcade-game/)
+The application can be run by clicking [here](https://wbchristerson.github.io/arcade-game/) or by following the below instructions to download to a hard drive:
 * Click the green "Clone or download" button above then choose "Download ZIP".
 * Find the folder `arcade-game-master` in your Downloads folder or wherever it was placed on your device.
 * Right click and choose "Extract All".
-* Open your browser and use `Ctrl + O` to open the file selector on your device.
+* Open your browser and use `Ctrl + O` (for Windows machines) to open the file selector on your device.
 * Go to `arcade-game-master`, enter `arcade-game-master` again, then select `index.html`. The game screen will appear.
 
 ### Structure
