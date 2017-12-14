@@ -29,7 +29,7 @@ The end page is very similar to the introductory page and congratulates both win
 ### Personal Programming Details
 This was my first attempt at using object-oriented design in JavaScript to create a program. There are classes for the enemies (the bug sprites), the player, the health units appearing at the bottom of the screen, and the gem.
 
-Not quite fond of the provided user sprites.
+I am not fond of the user sprites but they seem to fit the theme.
 
 ### Remaining Issues
 * The gems which appear in various levels are from image files which are rectangular, whereas the gems themselves have octagonal shapes. This makes the shapes appear incorrectly in the game.
