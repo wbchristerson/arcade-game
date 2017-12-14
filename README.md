@@ -6,6 +6,7 @@
 
 ### Running The Application
 
+* ![Here](https://wbchristerson.github.io/arcade-game/)
 * Click the green "Clone or download" button above then choose "Download ZIP".
 * Find the folder `arcade-game-master` in your Downloads folder or wherever it was placed on your device.
 * Right click and choose "Extract All".
