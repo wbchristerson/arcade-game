@@ -44,6 +44,15 @@ Enemy.prototype.render = function() {
 
 
 
+///////////////////////// Start Of Rock Class //////////////////////////////////
+// let Rock = function() {
+//   this.rockId = false;
+//   this.rockCoors = {xCoor: 0, yCoor: 0}
+// }
+///////////////////////// End Of Rock Class ////////////////////////////////////
+
+
+
 ///////////////////////// Start Of Player Class ////////////////////////////////
 let Player = function() {
   this.sprite = 'images/char-boy.png';
@@ -593,10 +602,14 @@ Gem.prototype.update = function(dt) {
   if (((player.x + 2) === this.x) && ((player.y + 20) === this.y)) {
     if (this.gemVal !== 0) { // if it is a genuine gem and not a star
       // execute the variable settings for the drifting point text
-      gem.scoreX = this.x;
-      gem.scoreY = this.y;
-      gem.score = this.gemVal;
-      gem.announceScore = 0;
+      this.scoreX = this.x;
+      this.scoreY = this.y;
+      this.score = this.gemVal;
+      this.announceScore = 0;
+      // gem.scoreX = this.x;
+      // gem.scoreY = this.y;
+      // gem.score = this.gemVal;
+      // gem.announceScore = 0;
       player.score += this.gemVal;
     }
     else { // if the gem is actually a star
