@@ -95,10 +95,10 @@ var Engine = (function(global) {
     });
     // player.update();
     player.update();
-      for (let i = 0; i < health.length; i++) {
-        health[i].update();
-      }
-      gem.update();
+    for (let i = 0; i < health.length; i++) {
+      health[i].update();
+    }
+    gem.update();
   }
 
   /* This function initially draws the "game level", it will then call
