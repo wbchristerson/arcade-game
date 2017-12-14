@@ -1,5 +1,7 @@
 # Frogger
 
+![Frogger Sample Screenshot](images/general-game.png)
+
 ### Running The Application
 
 ### Structure
