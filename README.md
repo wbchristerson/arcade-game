@@ -17,8 +17,17 @@ The game begins with an introductory page explaining how to play. It also lists 
 
 ![Frogger Introductory Page](images/intro-page.png)
 
+The game page includes a background of grass, brick, and water units. The score, health, and level appear at the bottom. Enemy sprites cross the screen from left to right at varying speeds and positions. Gems and stars occasionally appear, bobbing up and down until collected. When a gem is collected, it disappears and its added point value drifts up the screen for several iterations. Blue gems are worth 3 points, green gems are worth 6 points, and orange gems are worth 9 points. Upon reaching levels 5, 10, and 15, an announcement appears across the screen for several iterations.
+
+![Frogger Game Page](images/game-page.png)
+
+The end page is very similar to the introductory page and congratulates both wins and losses.
+
+![Frogger End Page](images/end-page.png)
+
 ### Personal Programming Details
+This was my first attempt at using object-oriented design in JavaScript to create a program. There are classes for the enemies (the bug sprites), the player, the health units appearing at the bottom of the screen, and the gem.
 
 ### Remaining Issues
 * The gems which appear in various levels are from image files which are rectangular, whereas the gems themselves have octagonal shapes. This makes the shapes appear incorrectly in the game.
-*
+* I would have liked to have had the user's sprite do something more noticeable upon finishing a level, like rotating 360 degrees. I tried using the `.save()` and `.restore()` functions in conjunction with the `.rotate` function but was unable to make it work correctly.
