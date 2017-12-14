@@ -23,10 +23,13 @@ The game page includes a background of grass, brick, and water units. The score,
 
 The end page is very similar to the introductory page and congratulates both wins and losses.
 
-![Frogger End Page](images/end-page.png)
+![Frogger Lose End Page](images/end-lose-page)
+![Frogger Win End Page](images/end-page.png)
 
 ### Personal Programming Details
 This was my first attempt at using object-oriented design in JavaScript to create a program. There are classes for the enemies (the bug sprites), the player, the health units appearing at the bottom of the screen, and the gem.
+
+Not quite fond of the provided user sprites.
 
 ### Remaining Issues
 * The gems which appear in various levels are from image files which are rectangular, whereas the gems themselves have octagonal shapes. This makes the shapes appear incorrectly in the game.
