@@ -15,13 +15,17 @@
 ### Design
 The game begins with an introductory page explaining how to play. It also lists the possible avatars for the user, along with the keys to be pressed to switch to those avatars. The player begins by pressing the "space" key.
 
+<p align="center">
+  <img src="images/intro-page.png" alt="Frogger Introductory Page">
+</p>
+
 ![Frogger Introductory Page](images/intro-page.png)
 
 The game page includes a background of grass, brick, and water units. The score, health, and level appear at the bottom. Enemy sprites cross the screen from left to right at varying speeds and positions. Gems and stars occasionally appear, bobbing up and down until collected. When a gem is collected, it disappears and its added point value drifts up the screen for several iterations. Blue gems are worth 3 points, green gems are worth 6 points, and orange gems are worth 9 points. Upon reaching levels 5, 10, and 15, an announcement appears across the screen for several iterations.
 
 ![Frogger Game Page](images/game-page.png)
 
-The end page is very similar to the introductory page and congratulates both wins and losses.
+The end page is very similar to the introductory page and congratulates both losses and wins.
 
 ![Frogger Lose End Page](images/end-lose-page.png)
 ![Frogger Win End Page](images/end-page.png)
