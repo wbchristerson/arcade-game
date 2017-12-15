@@ -79,7 +79,6 @@ var Engine = (function(global) {
    */
   function update(dt) {
     updateEntities(dt);
-    // checkCollisions();
   }
 
   /* This is called by the update function and loops through all of the
@@ -93,12 +92,13 @@ var Engine = (function(global) {
     allEnemies.forEach(function(enemy) {
       enemy.update(dt);
     });
-    // player.update();
     player.update();
-    for (let i = 0; i < health.length; i++) {
-      health[i].update();
-    }
+    // for (let i = 0; i < health.length; i++) {
+    //   health[i].update();
+    // }
     gem.update();
+    bobTimer.update();
+    gameState.update();
   }
 
   /* This function initially draws the "game level", it will then call
@@ -165,6 +165,12 @@ var Engine = (function(global) {
     });
 
     gem.render();
+
+    rocks.forEach(function(rock) {
+      rock.render();
+    });
+
+    gameState.render();
   }
 
   /* This function does nothing but it could have been a good place to

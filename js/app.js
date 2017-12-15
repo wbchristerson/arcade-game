@@ -1,264 +1,125 @@
-///////////////////////// Start Of Enemy Class /////////////////////////////////
+///////////////////////////// Enemy Class //////////////////////////////////////
 // Enemies our player must avoid
 var Enemy = function() {
-  // Variables applied to each of our instances go here,
-  // we've provided one for you to get started
-
+  this.sprite = 'images/enemy-bug.png';
   // Place bugs in random positions just left of the left end of the screen
   this.x = -1 * Math.floor(Math.random() * 100) - 100;
   this.y = (83 * (Math.floor(Math.random() * 3))) + 395 - (4 * 83);
-  this.speed = (Math.floor(Math.random() * 500)) + 1;
-  // The image/sprite for our enemies, this uses
-  // a helper we've provided to easily load images
-  this.sprite = 'images/enemy-bug.png';
+  // give enemy a random speed
+  this.speed = (Math.floor(Math.random() * 500)) + 100;
 };
 
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
+/* re-randomize the position of the enemy to the left of the board and randomize
+   its speed */
+Enemy.prototype.randomizeData = function() {
+  this.x = -1 * Math.floor(Math.random() * 100) - 100;
+  this.y = (83 * (Math.floor(Math.random() * 3))) + 395 - (4 * 83);
+  this.speed = (Math.floor(Math.random() * 500)) + 100;
+};
+
+
+// check for a collision with the player
+Enemy.prototype.checkCollision = function() {
+  if ((this.y === player.y) && (Math.abs(this.x - player.x) <= 71)) {
+    // if there is a collision, reset player position and decrement health
+    gameState.resetPosition();
+    player.decHealth();
+  }
+};
+
+
 Enemy.prototype.update = function(dt) {
-  // You should multiply any movement by the dt parameter
-  // which will ensure the game runs at the same speed for
-  // all computers.
-
-  // If the enemy has moved to the right of the right end of the screen, then
-  // place it in a new random row to the left of the screen with a random
-  // speed
+  /* if the enemy has moved to the right of the right end of the screen, then
+     place it in a new random row to the left of the screen with a random
+     speed */
   if (this.x > 505) {
-    this.x = -1 * Math.floor(Math.random() * 100) - 100;
-    this.y = (83 * (Math.floor(Math.random() * 3))) + 395 - (4 * 83);
-    this.speed = (Math.floor(Math.random() * 500)) + 100;
+    this.randomizeData();
   }
-  // If the player has entered the game page, then have the bug move
-  if (player.gamePage) {
+  // if the player has entered the game page, then have the enemy move
+  if (gameState.gamePage) {
     this.x += dt * this.speed;
+    this.checkCollision();
   }
 };
 
 
-// Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-  ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
-///////////////////////// End Of Enemy Class ///////////////////////////////////
-
-
-
-///////////////////////// Start Of Rock Class //////////////////////////////////
-// let Rock = function() {
-//   this.rockId = false;
-//   this.rockCoors = {xCoor: 0, yCoor: 0}
-// }
-///////////////////////// End Of Rock Class ////////////////////////////////////
-
-
-
-///////////////////////// Start Of Player Class ////////////////////////////////
-let Player = function() {
-  this.sprite = 'images/char-boy.png';
-  this.x = 200;
-  this.y = 395;
-  // game level
-  this.level = 1;
-  // whether the sprite has reached the water
-  this.atWater = false;
-  // a counter that goes up to 60 to pause for when the player has finished the
-  // level (i.e. reached the water)
-  this.pauseCounter = 0;
-  // array of booleans telling whether each of the four rock sprites is visible
-  // on the screen during the level
-  this.rockIds = [false, false, false, false];
-  // array of objects listing the coordinates of the rock sprites
-  this.rockCoors = [{xCoor: 0, yCoor: 0}, {xCoor: 0, yCoor: 0},
-                    {xCoor: 0, yCoor: 0}, {xCoor: 0, yCoor: 0}];
-  this.score = 0;
-  this.lives = 3;
-  // announces level 5, 10, 15, for a pause of 120 iterations
-  this.levelAlarm = 120;
-  this.introPage = true; // set introductory page
-  this.gamePage = false; // set game page
-  this.endPage = false; // set end page
-  // cases for ending the game as a win or loss
-  this.win = false;
-  this.lose = false;
-};
-
-
-// reset the round after the player is hit by an enemy
-Player.prototype.roundReset = function() {
-  this.x = 200;
-  this.y = 395;
-  this.lives -= 1; // lose a life since hit by an enemy
-  health.pop(); // remove a health sprite from display
-};
-
-
-// transition to the end page either after a win or game over
-Player.prototype.endGame = function() {
-  this.gamePage = false;
-  this.endPage = true;
-  // place the gem out of view if not already
-  gem.x = 0;
-  gem.y = 700;
-  // place rocks out of view to be reset if the player wishes to play again
-  for (let i = 0; i < this.rockIds.length; i++) {
-    this.rockIds[i] = false;
+  if (gameState.gamePage) {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
   }
 };
 
 
-// set enemies' x-coordinates to beyond the right end of the screen to trigger
-// random placement and speed resetting to the left of the screen
-Player.prototype.triggerEnemiesReset = function() {
-  for(let i = 0; i < 3; i++) {
-    allEnemies[i].x = 506;
-  }
+///////////////////////////// BobTimer Class ///////////////////////////////////
+/* For effects, certain screen objects bob up and down; this class achieves
+   this by using a counter to locate the vertical positions of the sprites */
+let BobTimer = function() {
+  this.stepCounter = 0; // 5 stepcounters make one vertical unit alteration
+  this.offset = 0; // 10 offsets make one directed cycle (up or down)
+  this.offSign = 1; // the direction, 1 or -1, of vertical movement
 };
 
 
-// reset the entire game upon pushing 'space' following either a win or loss
-Player.prototype.resetGame = function() {
-  this.score = 0;
-  this.lives = 3;
-  this.level = 1;
-  // reset health display with three sprites
-  health.push(new HealthUnit(100, 550, 0));
-  health.push(new HealthUnit(135, 550, 1));
-  health.push(new HealthUnit(170, 550, 2));
-  this.endPage = false; // leave the end page
-  this.triggerEnemiesReset(); // reset enemies
-};
-
-
-// Reset the four rock sprites at the start of each level, some of which may
-// not end up on screen during the level
-Player.prototype.resetRocks = function() {
-  for (let i = 0; i < 3; i++) {
-    // randomly decide whether to display each of the rocks on the board
-    let rockId = 1 + Math.floor(5 * Math.random());
-    if (rockId <= this.level) {
-      // if it is decided that the rock appears, choose its coordinates
-      // randomly and set its id in the array to 'true'
-      this.rockIds[i] = true;
-      let xCoor = 101 * Math.floor(5 * Math.random());
-      let yCoor = 83 * (1 + Math.floor(3 * Math.random()));
-      this.rockCoors[i].xCoor = xCoor;
-      this.rockCoors[i].yCoor = yCoor;
+BobTimer.prototype.update = function(dt) {
+  this.stepCounter += 1;
+  if (this.stepCounter === 5) {
+    this.stepCounter = 0;
+    this.offset += this.offSign;
+    if (this.offset === 11) {
+      this.offset = 9;
+      this.offSign *= -1;
     }
-    else {
-      // if it is decided that the rock will not appear on the screen then
-      // set its id in the array to 'false'
-      this.rockIds[i] = false;
-    }
-  }
-  // to make the game more difficult as the levels increase: if the level is
-  // more than 5, then set the fourth rock to some position in the rightmost
-  // column to obstruct easy movement of the player there
-  if (this.level > 5) {
-    this.rockIds[3] = true;
-    this.rockCoors[3].xCoor = 404;
-    this.rockCoors[3].yCoor = 83 * (1 + Math.floor(3 * Math.random()));
-  }
-};
-
-
-Player.prototype.update = function(dt) {
-  // branch for when the player has not completed the level, i.e.
-  // not reached water
-  if (!this.atWater) {
-    // check if the player is in contact with any enemies
-    for (let i = 0; i < allEnemies.length; i++) {
-      if ((allEnemies[i].y === this.y) &&
-          (Math.abs(allEnemies[i].x - this.x) <= 71)) {
-            this.roundReset();
-        // inner branch for if the player is in contact with an enemy and has
-        // now lost all lives
-        if (this.lives === 0) {
-          this.lose = true;
-          this.endGame(); // enter end page
-        }
-        // reset or transition to end page immediately after the first contact
-        // with an enemy is discovered
-        break;
-      }
-    }
-    // update the player's status to having reached water when the y-coordinate
-    // falls to 50 or lower
-    if (this.y <= 50) {
-      this.atWater = true;
+    if (this.offset === -1) {
+      this.offset = 1;
+      this.offSign *= -1;
     }
   }
 
-  // branch for when the player has reached water (i.e. completed the level)
-  // thought the timer of 60 iterations has not been completed (this is so that
-  // the player does not immediately get reset to the new level)
-  else if (this.pauseCounter < 60) {
-      // the player receives 1 point for having completed the level, which is
-      // displayed as a small '+1' drifting ever higher on the screen for 60
-      // iterations
-      if (this.pauseCounter === 0) {
-        gem.scoreX = this.x;
-        gem.scoreY = this.y + 200;
-        gem.score = 1;
-        gem.announceScore = 0;
-      }
-      this.pauseCounter++;
-  }
-
-  // branch for when the player has reached water and has completed the 60
-  // iteration waiting period, so that the new level must be set
-  else {
-    this.atWater = false; // set status as not at water
-    this.triggerEnemiesReset(); // reset enemies
-    this.pauseCounter = 0; // reset pauseCounter for later use
-    // give signal to randomly place a kind of gem, a star, or neither on the board
-    gem.mustSet = true;
-    // reset coordinates
-    this.x = 200;
-    this.y = 395;
-    this.level += 1; // increase level
-    this.resetRocks();
-
-    this.score += 1; // reward the player for finishing another level
-
-    // if the player has reached level 5, 10, or 15, then congratulate them
-    // with a message on the screen that pans down for a set number of
-    // iterations, telling them so
-    if ((this.level % 5) === 0) {
-      this.levelAlarm = 0; // trigger the message
-    }
-
-    // if the level counter has reached 16, then the player has won the game
-    if (this.level === 16) {
-      gem.mustSet = false; // remove the gem from the screen if visible
-      // set winning variable to true to transition to the correct ending
-      // statement
-      this.win = true;
-      // prepare health to be reset by removing any extraneous HealthUnit
-      // instances
-      health = [];
-      this.endGame(); // transition to the end game screen
-    }
-  }
 };
 
 
-// set variables for the active game itself
-Player.prototype.prepareGameScreen = function() {
-  this.gamePage = true;
-  this.lose = false;
-  this.win = false;
+
+///////////////////////////// GameState Class //////////////////////////////////
+let GameState = function() {
+  // at any time, exactly one of introPage, gamePage, endPage should be true
+  this.introPage = true; // signal introductory page
+  this.gamePage = false; // signal actual game page
+  this.endPage = false; // signal end page
+  // at any time, at most one of endLose and endWin should be true
+  this.endLose = false; // signal losing state of end page
+  this.endWin = false; // signal winning state of end page
+  /* when introductory page appears, this signifies how much displayed sprites
+     should be offset, giving the effect of bobbing up and down */
+  this.spriteOffset = 0;
+  this.levelAlarm = 120; // alarm for announcing levels 5, 10, 15
 };
 
 
-// text statement for introductory page
-Player.prototype.introStatement = function() {
+// when at the introductory or end page, make the background colorful
+GameState.prototype.renderBackground = function() {
+  let my_gradient = ctx.createLinearGradient(0,100,505,300);
+  my_gradient.addColorStop(0,'#4286f4');
+  my_gradient.addColorStop(1,'#3de534');
+  ctx.fillStyle=my_gradient;
+  ctx.fillRect(0, 0, 505, 606);
+  ctx.fillStyle = 'black';
+};
+
+
+// introductory page text
+GameState.prototype.renderIntroText = function() {
+  ctx.font = '18px arial';
   ctx.fillText('Welcome To Frogger!', 160, 110);
   ctx.fillText('Use the arrow keys to traverse the board and reach', 30, 150);
   ctx.fillText('the water at the opposite side but beware of oncoming', 30, 170);
   ctx.fillText('enemy bugs! You may collect gems for points and stars', 30, 190);
   ctx.fillText('for additional lives. There are 15 levels. Good luck!', 30, 210);
+};
 
+
+// introductory page text about possible avatars
+GameState.prototype.renderIntroAvatarText = function() {
   ctx.fillText('Press the following keys at any time to change your', 30, 250);
   ctx.fillText('character to the corresponding avatar.', 30, 270);
 
@@ -268,365 +129,607 @@ Player.prototype.introStatement = function() {
   ctx.fillText('r', 348, 310);
   ctx.fillText('t', 449, 310);
 
-  ctx.drawImage(Resources.get('images/char-boy.png'), 0, 270 + gem.gemOffset);
+  // display bobbing sprite options
+  ctx.drawImage(Resources.get('images/char-boy.png'), 0,
+                270 + bobTimer.offset);
   ctx.drawImage(Resources.get('images/char-cat-girl.png'), 101,
-                270 + gem.gemOffset);
+                270 + bobTimer.offset);
   ctx.drawImage(Resources.get('images/char-horn-girl.png'), 202,
-                270 + gem.gemOffset);
+                270 + bobTimer.offset);
   ctx.drawImage(Resources.get('images/char-pink-girl.png'), 303,
-                270 + gem.gemOffset);
+                270 + bobTimer.offset);
   ctx.drawImage(Resources.get('images/char-princess-girl.png'), 404,
-                270 + gem.gemOffset);
+                270 + bobTimer.offset);
 
   ctx.fillText('Press "space" to begin.', 160, 480);
 };
 
 
-Player.prototype.handleInput = function(keyStroke) {
-  let availableSpot = true;
-  // enter this branch if the left arrow key has been pressed, if the player is
-  // not on the far left of the screen, and if the game is currently ongoing
-  // rather than the introductory or end pages; similarly for up, douwn, and
-  // right
-  if ((keyStroke === 'left') && (this.x >= 90) && this.gamePage) {
-    // if the desired position is filled with a rock, then set availableSpot
-    // to false so that the player cannot move there
-    for (let k = 0; k < 4; k++) {
-      if ((this.rockIds[k]) && ((this.x - 99) === this.rockCoors[k].xCoor) &&
-          ((this.y + 20) === this.rockCoors[k].yCoor)) {
-        availableSpot = false;
-      }
-    }
-    // if the spot is not occupied by a rock, then move there
-    if (availableSpot) {
-      this.x -= 101;
-    }
-  }
-  // same as above
-  else if ((keyStroke === 'right') && (this.x <= 400) && this.gamePage) {
-    for (let k = 0; k < 4; k++) {
-      if ((this.rockIds[k]) && ((this.x + 103) === this.rockCoors[k].xCoor) &&
-          ((this.y + 20) === this.rockCoors[k].yCoor)) {
-        availableSpot = false;
-      }
-    }
-    if (availableSpot) {
-      this.x += 101;
-    }
-  }
-  // same as above
-  else if ((keyStroke === 'up') && (this.y >= 0) && this.gamePage) {
-    for (let k = 0; k < 4; k++) {
-      if ((this.rockIds[k]) && ((this.x + 2) === this.rockCoors[k].xCoor) &&
-          ((this.y - 63) === this.rockCoors[k].yCoor)) {
-            availableSpot = false;
-      }
-    }
-    if (availableSpot) {
-      this.y -= 83;
-    }
-  }
-  // same as above but also the player cannot move down if it is currently
-  // in the water region during the pause at the end of the level
-  else if ((!this.atWater) && (keyStroke === 'down') && (this.y <= 380) &&
-            this.gamePage) {
-    for (let k = 0; k < 4; k++) {
-      if ((this.rockIds[k]) && ((this.x + 2) === this.rockCoors[k].xCoor) &&
-          ((this.y + 103) === this.rockCoors[k].yCoor)) {
-            availableSpot = false;
-      }
-    }
-    if (availableSpot) {
-      this.y += 83;
-    }
-  }
+// render level in lower left corner of screen during game
+GameState.prototype.renderLevel = function() {
+  ctx.fillText('Level ' + player.level.toString(), 10, 576);
+};
 
-  // if the player presses "space" from the introductory page, then prepare
-  // the game screen
-  else if (this.introPage && (keyStroke === 'space')) {
-    this.prepareGameScreen();
-    this.introPage = false;
-  }
 
-  // similar to the last branch
-  else if (this.endPage && (keyStroke === 'space')) {
-    this.prepareGameScreen();
-    this.resetGame();
-  }
+// render score in lower right corner of screen during game
+GameState.prototype.renderScore = function() {
+  ctx.fillText('Score: ' + player.score.toString(), 410, 576);
+};
 
-  // if the player presses "x" from the end page, then reset the game and set
-  // variables for the introductory page
-  else if (this.endPage && (keyStroke === 'x')) {
-    this.introPage = true;
-    this.resetGame();
-  }
 
-  // the remaining branches are for if the player wants to change sprite images
-  else if (keyStroke === 'q') {
-    this.sprite = 'images/char-boy.png';
-  }
+// rendering for introductory page
+GameState.prototype.renderIntro = function() {
+  this.renderBackground();
+  this.renderIntroText();
+  this.renderIntroAvatarText();
+};
 
-  else if (keyStroke === 'w') {
-    this.sprite = 'images/char-cat-girl.png';
-  }
 
-  else if (keyStroke === 'e') {
-    this.sprite = 'images/char-horn-girl.png';
-  }
+GameState.prototype.levelMessage = function() {
+  ctx.font = '36px bold arial';
+  ctx.fillStyle = '#ff0000';
+  ctx.fillText('You Have Reached Level ' + player.level.toString() + '!', 50,
+               200 + this.levelAlarm);
+  this.levelAlarm += 1;
+  ctx.fillStyle = 'black';
+  ctx.font = '18px arial';
+};
 
-  else if (keyStroke === 'r') {
-    this.sprite = 'images/char-pink-girl.png';
-  }
 
-  else if (keyStroke === 't') {
-    this.sprite = 'images/char-princess-girl.png';
+// rendering for game page; note: HealthUnits are rendered through engine.js
+GameState.prototype.renderGame = function() {
+  this.renderLevel();
+  this.renderScore();
+  // if beginning level 5, 10, 15, announcement must be made
+  if (this.levelAlarm < 120) {
+    this.levelMessage();
+  }
+};
+
+
+// rendering for end page
+GameState.prototype.renderEnd = function() {
+  this.renderBackground();
+  ctx.fillStyle = 'black';
+  ctx.font = '18px arial';
+  ctx.fillText('Press "space" to play again. Press "x" to return to the',
+               30, 180);
+  ctx.fillText('start menu.', 30, 200);
+};
+
+
+// show end page loss message
+GameState.prototype.renderEndLose = function() {
+  ctx.fillText('Wow! You got to level ' + player.level + ' with ' +
+               player.score + ' points.', 100, 110);
+};
+
+
+// show end page win message
+GameState.prototype.renderEndWin = function() {
+  ctx.fillText('Congratulations! You won with ' + player.score +
+               ' points.', 80, 110);
+};
+
+
+GameState.prototype.render = function() {
+  // if neither branch is entered, the game page rendering is executed
+  if (this.introPage) {
+    this.renderIntro(); // render the introductory page
+  }
+  else if (this.gamePage) {
+    this.renderGame();
+  }
+  else if (this.endPage) { // render the end page
+    this.renderEnd();
+    if (this.endLose) { // render losing end page
+      this.renderEndLose();
+    }
+    else if (this.endWin) { // render winning end page
+      this.renderEndWin();
+    }
+  }
+};
+
+
+// transition from the introductory page to the game page
+GameState.prototype.introToGame = function() {
+  this.introPage = false;
+  this.gamePage = true;
+};
+
+
+// transition from end page to game page
+GameState.prototype.endToGame = function() {
+  this.endPage = false;
+  this.gamePage = true;
+  this.endLose = false;
+  this.endWin = false;
+};
+
+
+// transition from game page to end page
+GameState.prototype.gameToEnd = function() {
+  this.gamePage = false;
+  this.endPage = true;
+};
+
+
+// transition from game page to end page after losing
+GameState.prototype.gameToEndLose = function() {
+  this.gameToEnd();
+  this.endLose = true;
+  this.endWin = false;
+};
+
+
+// transition from game page to end page after winning
+GameState.prototype.gameToEndWin = function() {
+  this.gameToEnd();
+  this.endLose = false;
+  this.endWin = true;
+};
+
+
+// transition from end page to introductory page
+GameState.prototype.endToIntro = function() {
+  this.endPage = false;
+  this.introPage = true;
+  this.endLose = false;
+  this.endWin = false;
+};
+
+
+// start the level over, either after enemy collision or new level
+GameState.prototype.resetPosition = function() {
+  player.x = 200;
+  player.y = 395;
+};
+
+
+// reset the round after reaching water, winning, or losing
+GameState.prototype.resetRound = function() {
+  // reset player position
+  this.resetPosition();
+  player.atWater = false; // reset status out of water
+  for (let i = 0; i < 3; i++) { // reset rocks
+    rocks[i].resetForRound();
+  }
+  rocks[3].resetOffScreen();
+  if (player.level > 5) {
+    rocks[3].setDifficultPlace();
+  }
+  gem.setReset(); // reset gem
+  for (let i = 0; i < allEnemies.length; i++) { // reset enemies
+    allEnemies[i].randomizeData();
+  }
+};
+
+
+// reset the game after winning or losing
+GameState.prototype.resetGame = function() {
+  player.level = 1;
+  this.resetRound();
+  // reset health display
+  health = [new HealthUnit(100, 550), new HealthUnit(135, 550),
+            new HealthUnit(170, 550)];
+  player.score = 0;
+  player.lives = 3;
+};
+
+
+// initiate alarm sequence of drifting level message
+GameState.prototype.announceLevel = function() {
+  this.levelAlarm = 0;
+};
+
+
+GameState.prototype.update = function(dt) {
+  if (player.level > 15) {
+    this.gameToEndWin();
+  }
+  if (player.lives <= 0) {
+    this.gameToEndLose();
+  }
+};
+
+
+
+///////////////////////////// Player Class /////////////////////////////////////
+let Player = function() {
+  this.sprite = 'images/char-boy.png';
+  this.x = 200;
+  this.y = 395;
+  this.level = 1; // there are 15 levels
+  this.score = 0;
+  this.atWater = false; // signals whether player is at water
+  // signals whether timer has begun for time in water
+  this.waterTimer = 60;
+  this.inTimer = false; // signals whether timer is currently in use
+  /* coordinates for first place where water is reached, so that the '+1' that
+     drifts up does not keep moving over screen with player during end pause */
+  this.waterX = 0;
+  this.waterY = 0;
+  /* when gem is collected, message showing score increase appears with this
+     scoreTimer in use */
+  this.scoreTimer = 60;
+  this.inScoreTimer = false; // whether scoreTimer is in use
+};
+
+
+// begin a new level after reaching water
+Player.prototype.startNewLevel = function() {
+  this.level += 1;
+  this.score += 1;
+  gameState.resetRound();
+  // if level is 5, 10, or 15, have large drifting statement on screen
+  if ((this.level % 5) === 0) {
+    gameState.announceLevel();
+  }
+};
+
+
+// make manual changes to player once reaching water
+Player.prototype.update = function(dt) {
+  if (this.waterTimer < 59) {
+    this.inTimer = true;
+    this.waterTimer += 1;
+  }
+  else if (this.waterTimer === 59) { // finish timer; start new level
+    this.inTimer = false;
+    this.waterTimer += 1;
+    this.startNewLevel();
+  }
+  if (this.scoreTimer < 59) {
+    this.inScoreTimer = true;
+    this.scoreTimer += 1;
+  }
+  else if (this.scoreTimer === 59) {
+    this.inScoreTimer = false;
+    this.scoreTimer += 1;
   }
 };
 
 
 Player.prototype.render = function() {
-  // draw the sprite
-  ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-  // set the text format
-  ctx.font = '18px arial';
-  ctx.textAlign = 'left';
-  // if the game is ongoing, list the level and score
-  if (this.gamePage) {
-    ctx.fillText('Level ' + this.level.toString(), 10, 576);
-    ctx.fillText('Score: ' + this.score.toString(), 410, 576);
-  }
-  // for each rock that is set to appear in the level, draw it at its position
-  for (let j = 0; j < this.rockIds.length; j++) {
-    if (this.rockIds[j]) {
-      ctx.drawImage(Resources.get('images/Rock.png'), this.rockCoors[j].xCoor,
-                    this.rockCoors[j].yCoor - 30);
+  if (gameState.gamePage) {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y); // draw sprite
+    if (this.inTimer) { // show drifting '+1'
+      ctx.fillText('+1', this.waterX + 5, this.waterY - this.waterTimer + 200);
+    }
+    if (this.inScoreTimer) { // show drifting score increase
+      ctx.fillText('+' + gem.gemVal.toString(), gem.scoreX,
+                   gem.scoreY - this.scoreTimer);
     }
   }
-
-  // if the player has reached level 5, 10, or 15, provide a message saying so
-  if (this.levelAlarm < 120) {
-    ctx.font = '36px bold arial';
-    ctx.fillStyle = '#ff0000';
-    ctx.fillText('You Have Reached Level ' + this.level.toString() + '!', 50,
-                 200 + this.levelAlarm);
-    this.levelAlarm += 1;
-    ctx.fillStyle = 'black';
-    ctx.font = '18px arial';
-  }
-
-  // if the screen is at the introductory or end page (i.e. not the game page),
-  // then set the background gradient accordingly
-  if (this.introPage || this.endPage) {
-    var my_gradient=ctx.createLinearGradient(0,100,505,300);
-    my_gradient.addColorStop(0,'#4286f4');
-    my_gradient.addColorStop(1,'#3de534');
-    ctx.fillStyle=my_gradient;
-    ctx.fillRect(0, 0, 505, 606);
-    ctx.fillStyle = 'black';
-  }
-
-  // provide the introductory page statement
-  if (this.introPage) {
-    this.introStatement();
-  }
-
-  // provide the end page statement when losing
-  if (this.endPage && this.lose) {
-    ctx.fillText('Wow! You got to level ' + this.level + ' with ' +
-                 this.score + ' points.', 100, 110);
-  }
-
-  // provide the end page statement when winning
-  if (this.endPage && this.win) {
-    ctx.fillText('Congratulations! You won with ' + this.score +
-                 ' points.', 80, 110);
-  }
-
-  // provide the options for playing again in either case of the end page
-  if (this.endPage) {
-    ctx.fillText('Press "space" to play again. Press "x" to return to the', 30, 180);
-    ctx.fillText('start menu.', 30, 200);
-  }
-
 };
-///////////////////////// End Of Player Class //////////////////////////////////
+
+
+// check if player at certain coordinates would collide with a specific rock
+Player.prototype.rockCollision = function(rock, xCoor, yCoor) {
+  if ((rock.x === xCoor) && (rock.y === yCoor)) {
+    return true;
+  }
+  return false;
+};
+
+
+// check if player would collide with any rocks at specific coordinates
+Player.prototype.allRockCollisions = function(xCoor, yCoor) {
+  let ans = false;
+  for (let i = 0; i < rocks.length; i++) {
+    if (this.rockCollision(rocks[i], xCoor, yCoor)) {
+      ans = true;
+      break;
+    }
+  }
+  return ans;
+}
+
+
+// actions for if player has reached water
+Player.prototype.reachedWater = function() {
+  this.atWater = true;
+  this.waterTimer = 0; // begin timer for pause at end of level
+  // set coordinates so that '+1' message stays in a single position
+  this.waterX = this.x;
+  this.waterY = this.y;
+};
+
+
+// increase the player's lives count by 1 and display this on screen
+Player.prototype.incHealth = function() {
+  this.lives += 1;
+  health.push(new HealthUnit(65 + 35 * this.lives, 550));
+};
+
+
+// when a gem is obtained, increase the score and show a drifting score increase
+Player.prototype.incScore = function(gemInst) {
+  this.score += gemInst.gemVal;
+  this.inScoreTimer = true;
+  this.scoreTimer = 0;
+};
+
+
+// when a collision with an enemy occurs, decrease health and show display
+Player.prototype.decHealth = function() {
+  this.lives -= 1;
+  health.pop();
+};
+
+
+Player.prototype.handleInput = function(keyStroke) {
+  // if at introductory page and 'space' is pressed, switch to game page
+  if (gameState.introPage && (keyStroke === 'space')) {
+    gameState.introToGame();
+    gameState.resetGame(); // reset the board at the game's start
+  }
+  // if at end page and 'space' is pressed, switch to game page
+  else if (gameState.endPage && (keyStroke === 'space')) {
+    gameState.endToGame();
+    gameState.resetGame(); // reset the board at the game's start
+  }
+  // if at end page and 'x' is pressed, switch to introductory page
+  else if (gameState.endPage && (keyStroke === 'x')) {
+    gameState.endToIntro();
+  }
+  // following branches for changing character image
+  else if (keyStroke === 'q') {
+    this.sprite = 'images/char-boy.png';
+  }
+  else if (keyStroke === 'w') {
+    this.sprite = 'images/char-cat-girl.png';
+  }
+  else if (keyStroke === 'e') {
+    this.sprite = 'images/char-horn-girl.png';
+  }
+  else if (keyStroke === 'r') {
+    this.sprite = 'images/char-pink-girl.png';
+  }
+  else if (keyStroke === 't') {
+    this.sprite = 'images/char-princess-girl.png';
+  }
+  /* movement key strokes; make sure player remains on page and does not go
+     through a rock */
+  else if ((keyStroke === 'left') && (this.x >= 90) && gameState.gamePage &&
+           (!this.allRockCollisions(this.x - 99, this.y + 20))) {
+    this.x -= 101;
+  }
+  else if ((keyStroke === 'right') && (this.x <= 400) && gameState.gamePage &&
+           (!this.allRockCollisions(this.x + 103, this.y + 20))) {
+    this.x += 101;
+  }
+  else if ((keyStroke === 'up') && (this.y >= 0) && gameState.gamePage &&
+           (!this.allRockCollisions(this.x + 2, this.y - 63))) {
+    this.y -= 83;
+    if (this.y <= 50) { // detect if player reaches water
+      this.reachedWater();
+    }
+  }
+  // prevent player from moving down once reaching water
+  else if ((!this.atWater) && (keyStroke === 'down') && (this.y <= 380) &&
+            gameState.gamePage &&
+            (!this.allRockCollisions(this.x + 2, this.y + 103))) {
+    this.y += 83;
+  }
+};
 
 
 
-///////////////////////// Start Of HealthUnit Class ////////////////////////////
-// HealthUnits correspond to sprites displaying the number of lives that the
-// player currently has
-let HealthUnit = function(xCoor, yCoor,rank) {
+///////////////////////////// Rock Class ///////////////////////////////////////
+let Rock = function() {
+  // begin with rock off of screen
+  this.x = 0;
+  this.y = 700;
+  this.sprite = "images/Rock.png";
+};
+
+
+Rock.prototype.render = function() {
+  if (gameState.gamePage) {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y - 30);
+  }
+};
+
+
+// if rock must appear on screen, choose a random spot
+Rock.prototype.placeOnScreen = function() {
+  let xCoor = 101 * Math.floor(5 * Math.random());
+  let yCoor = 83 * (1 + Math.floor(3 * Math.random()));
+  this.x = xCoor;
+  this.y = yCoor;
+};
+
+
+// randomization for whether rock should appear on screen for round
+Rock.prototype.setRandomPlace = function() {
+  let rockRand = 1 + Math.floor(5 * Math.random());
+  // if random variable below certain value, have rock appear on screen
+  if (rockRand <= player.level) {
+    this.placeOnScreen();
+  }
+};
+
+
+// reset rock at start of round as being off of screen
+Rock.prototype.resetOffScreen = function() {
+  this.x = 0;
+  this.y = 700;
+};
+
+
+// do full cycle of placing off screen and randomly including
+Rock.prototype.resetForRound = function() {
+  this.resetOffScreen();
+  this.setRandomPlace();
+};
+
+
+// for placement of fourth rock (see below), check if all positions in
+// rightmost column were taken by first three rocks
+Rock.prototype.checkLastRow = function() {
+  colArr = [false, false, false];
+  for (let i = 0; i < 3; i++) {
+    if (rocks[i].x === 404) {
+      colArr[(rocks[i].y / 83) - 1] = true;
+    }
+  }
+  if (colArr[0] && colArr[1] && colArr[2]) {
+    return true;
+  }
+  return false;
+};
+
+
+// beyond level 5, make the game more difficult by always placing the fourth
+// rock in rocks[] somehwere in the rightmost column on the page
+Rock.prototype.setDifficultPlace = function() {
+  this.x = this.checkLastRow() ? 303 : 404;
+  let availableSpot = false;
+  let yCoor;
+  while (!availableSpot) {
+    availableSpot = true;
+    yCoor = 83 * (1 + Math.floor(3 * Math.random()));
+    this.y = yCoor;
+    for (let i = 0; i < 3; i++) {
+      if ((this.x === rocks[i].x) && (this.y === rocks[i].y)) {
+        availableSpot = false;
+      }
+    }
+  }
+};
+
+
+
+///////////////////////////// Gem Class ////////////////////////////////////////
+let Gem = function() {
+  this.x = 0;
+  this.y = 800;
+  this.gemVal = 3;
+  this.sprite = 'images/Gem_Blue_Small.png';
+  // signals whether gem position and type should be reset (for a new level)
+  this.mustReset = false;
+  // gives coordinates of where increased score announcement should be
+  this.scoreX = 0;
+  this.scoreY = 800;
+};
+
+
+// at the start of a new round, clear the gem from the page
+Gem.prototype.clearFromPage = function() {
+  this.x = 0;
+  this.y = 800;
+};
+
+
+// set sprite image and value based on gem random variable
+Gem.prototype.setGemInfo = function(gemRandVar) {
+  if ((gemRandVar >= 3) && (gemRandVar <= 4)) {
+    this.sprite = 'images/Star.png';
+    this.gemVal = 0;
+  }
+  else if ((gemRandVar >= 5) && (gemRandVar <= 7)) {
+    this.sprite = 'images/Gem_Blue_Small.png';
+    this.gemVal = 3;
+  }
+  else if ((gemRandVar >= 8) && (gemRandVar <= 9)) {
+    this.sprite = 'images/Gem_Green_Small.png';
+    this.gemVal = 6;
+  }
+  else if (gemRandVar === 10) {
+    this.sprite = 'images/Gem_Orange_Small.png';
+    this.gemVal = 9;
+  }
+};
+
+// given that gem is to appear on screen, randomly set coordinates, but not on
+// a spot containing a rock already
+Gem.prototype.setCoordinates = function() {
+  let spaceOccupied = false;
+  while(!spaceOccupied) {
+    spaceOccupied = true;
+    this.x = 101 * Math.floor(5 * Math.random());
+    this.y = 83 * (1 + Math.floor(3 * Math.random()));
+    for (let i = 0; i < 4; i++) {
+      if ((rocks[i].x === this.x) && (rocks[i].y === this.y)) {
+        spaceOccupied = false;
+        break;
+      }
+    }
+  }
+};
+
+
+// through randomization, possibly place gem on page, otherwise leave off screen
+Gem.prototype.tryPlaceOnPage = function() {
+  let gemRand = 1 + Math.floor(10 * Math.random());
+  if (gemRand >= 3) {
+    this.setGemInfo(gemRand);
+    this.setCoordinates();
+  }
+};
+
+
+// give signal that position of gem must be reset at start of level
+Gem.prototype.setReset = function() {
+  this.mustReset = true;
+};
+
+
+Gem.prototype.update = function(dt) {
+  if (this.mustReset) {
+    this.mustReset = false;
+    this.clearFromPage();
+    this.tryPlaceOnPage();
+  }
+  if (((player.x + 2) === this.x) && ((player.y + 20) === this.y)) {
+    this.scoreX = this.x;
+    this.scoreY = this.y;
+    this.gemVal ? player.incScore(this) : player.incHealth();
+    this.clearFromPage();
+  }
+};
+
+
+// if gem is genuine gem (not star)
+Gem.prototype.renderRealGem = function() {
+  ctx.drawImage(Resources.get(this.sprite), this.x + 20,
+                this.y + 60 - bobTimer.offset);
+};
+
+
+// if gem is actually star
+Gem.prototype.renderStar = function() {
+  ctx.drawImage(Resources.get(this.sprite), this.x,
+                this.y - 8 - bobTimer.offset);
+};
+
+
+Gem.prototype.render = function() {
+  if (gameState.gamePage && (this.gemVal !== 0)) { // if genuine gem
+    this.renderRealGem();
+  }
+  else if (gameState.gamePage && (this.gemVal === 0)) { // if star
+    this.renderStar();
+  }
+};
+
+
+
+///////////////////////////// HealthUnit Class /////////////////////////////////
+let HealthUnit = function(xCoor, yCoor) {
   this.sprite = 'images/Heart-Small.png';
   this.x = xCoor;
   this.y = yCoor;
 };
 
 
-// draw the sprite
 HealthUnit.prototype.render = function() {
-  if (player.gamePage) {
+  if (gameState.gamePage) {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
   }
 };
-
-
-HealthUnit.prototype.update = function(dt) {
-};
-///////////////////////// End Of HealthUnit Class //////////////////////////////
-
-
-
-///////////////////////// Start Of Gem Class ///////////////////////////////////
-// A class for the gems and stars that appear in some levels; a blue gem is
-// worth 3 points, a green gem is worth 6 points, an orange gem is worth 9
-// points, and a star yields another life; blue gems appear randomly with
-// probability 30%, green gems with probability 20%, orange gems with
-// probability 10%, and stars with probability 20%, but never together
-let Gem = function() {
-  this.gemOffset = 0;
-  // gems bob up and down on screen so the gemSign signfies whether it is
-  // currently moving up or down on the screen (it is always set to either
-  // 1 or -1)
-  this.gemSign = 1;
-  // a counter for steps until moving the gem up the screen
-  this.stepCounter = 0;
-  // initialize the gem so that it is off of the visible screen
-  this.x = 0;
-  this.y = 700;
-  // intialize sprite to the blue gem
-  this.sprite = 'images/Gem_Blue_Small.png';
-  // a signal determining whether the gem must be rendered on the visible screen
-  this.mustSet = false;
-  // the value of the gem in points, initially set to the value of a blue gem
-  this.gemVal = 3;
-  // when a gem is collected, its value appears on the screen for a short
-  // period, drifting upwards; this gives the coordinates of the drifting text
-  this.scoreX = 0;
-  this.scoreY = 700;
-  this.score = 3;
-  // a counter for how long the score appears on the screen (to be set to 0
-  // when it is to initially appear)
-  this.announceScore = 70;
-};
-
-
-Gem.prototype.render = function() {
-  // if the object is genuinely one of the gems
-  if (this.gemVal !== 0) {
-    ctx.drawImage(Resources.get(this.sprite), this.x + 20,
-                  this.y + 60 - this.gemOffset);
-  }
-  // if the object is in fact a star
-  else {
-    ctx.drawImage(Resources.get(this.sprite), this.x,
-                  this.y - 8 - this.gemOffset);
-  }
-  // render the point value of the gem when the counter is triggered
-  if (this.announceScore < 70) {
-    this.announceScore += 1;
-    ctx.fillText('+' + this.score.toString(), this.scoreX,
-                 this.scoreY - this.announceScore);
-  }
-};
-
-
-Gem.prototype.animateGem = function() {
-  this.stepCounter += 1;
-  if (this.stepCounter === 5) {
-    this.stepCounter = 0;
-    this.gemOffset += this.gemSign;
-    if (this.gemOffset === 11) {
-      this.gemOffset = 9;
-      this.gemSign *= -1;
-    }
-    if (this.gemOffset === -1) {
-      this.gemOffset = 1;
-      this.gemSign *= -1;
-    }
-  }
-};
-
-
-Gem.prototype.update = function(dt) {
-  if (this.mustSet) { // if the gem is signalled to be potentially rendered
-    let gemRand, spaceOccupied;
-    // a random variable to choose the choice of gem, if any
-    gemRand = 1 + Math.floor(10 * Math.random());
-    if (gemRand >= 3) { // if a gem (or star) is to appear
-      spaceOccupied = true;
-      // seek out an empy spot (not occupied by a rock) to place the gem at
-      while (spaceOccupied) {
-        this.x = 101 * Math.floor(5 * Math.random());
-        this.y = 83 * (1 + Math.floor(3 * Math.random()));
-        spaceOccupied = false;
-        for (let i = 0; i < 4; i++) {
-          if ((player.rockIds[i]) &&
-            (player.rockCoors[i].xCoor === this.x) &&
-            (player.rockCoors[i].yCoor === this.y)) {
-            spaceOccupied = true;
-          }
-        }
-      }
-    }
-    // if no gem is to appear, place the gem object off of the visible screen
-    else {
-      this.y = 700;
-    }
-
-    // set the appropriate sprite for the gem
-    if ((gemRand === 3) || (gemRand === 4)) {
-      this.sprite = 'images/Star.png';
-      this.gemVal = 0;
-    }
-
-    else if ((5 <= gemRand) && (gemRand <= 7)) {
-      this.sprite = 'images/Gem_Blue_Small.png';
-      this.gemVal = 3;
-    }
-
-    else if ((8 <= gemRand) && (gemRand <= 9)) {
-      this.sprite = 'images/Gem_Green_Small.png';
-      this.gemVal = 6;
-    }
-
-    else if (gemRand === 10) {
-      this.sprite = 'images/Gem_Orange_Small.png';
-      this.gemVal = 9;
-    }
-
-    this.mustSet = false;
-  }
-
-  // this branch is for if the player comes in contact with the gem
-  if (((player.x + 2) === this.x) && ((player.y + 20) === this.y)) {
-    if (this.gemVal !== 0) { // if it is a genuine gem and not a star
-      // execute the variable settings for the drifting point text
-      this.scoreX = this.x;
-      this.scoreY = this.y;
-      this.score = this.gemVal;
-      this.announceScore = 0;
-      // gem.scoreX = this.x;
-      // gem.scoreY = this.y;
-      // gem.score = this.gemVal;
-      // gem.announceScore = 0;
-      player.score += this.gemVal;
-    }
-    else { // if the gem is actually a star
-      player.lives += 1;
-      health.push(new HealthUnit(65 + 35 * player.lives, 550, player.lives - 1));
-    }
-    // since the gem has been successfully collected, moved it off of the
-    // visible screen
-    this.x = 0;
-    this.y = 700;
-  }
-
-  // set the y-coordinate of the gem so that it appears to bob up and down
-  // throughout iterations
-  this.animateGem();
-};
-///////////////////////// End Of Gem Class /////////////////////////////////
 
 
 
@@ -635,11 +738,15 @@ Gem.prototype.update = function(dt) {
 // Place the player object in a variable called player
 // Begin with three lives, represented by three HealthUnits
 // Include one gem
+let gameState = new GameState();
 let allEnemies = [new Enemy(), new Enemy(), new Enemy()];
 let player = new Player();
-let health = [new HealthUnit(100, 550, 0), new HealthUnit(135, 550, 1),
-              new HealthUnit(170, 550, 2)];
+let health = [new HealthUnit(100, 550), new HealthUnit(135, 550),
+              new HealthUnit(170, 550)];
+let rocks = [new Rock(), new Rock(), new Rock(), new Rock()];
 let gem = new Gem();
+let bobTimer = new BobTimer();
+
 
 
 // This listens for key presses and sends the keys to your
