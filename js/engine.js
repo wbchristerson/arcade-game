@@ -93,9 +93,6 @@ var Engine = (function(global) {
       enemy.update(dt);
     });
     player.update();
-    // for (let i = 0; i < health.length; i++) {
-    //   health[i].update();
-    // }
     gem.update();
     bobTimer.update();
     gameState.update();
@@ -178,10 +175,6 @@ var Engine = (function(global) {
    * those sorts of things. It's only called once by the init() method.
    */
   function reset() {
-    // if (player.lives === 0) {
-    //   ctx.fillText('Game Over', 200, 200);
-    //
-    // }
     // noop
   }
 
