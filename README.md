@@ -40,6 +40,8 @@ The end page is very similar to the introductory page and congratulates both los
   <img src="images/end-page.png" alt = "Frogger Win End Page">
 </p>
 
+To give the impression of increasing difficulty, the chance of each of three independent rocks appearing on screen increases up to level 5, after which time they will all always appear (though sometimes overlapping each other). Furthermore, one strategy to avoid losing lives is to wait for the right half of the screen to become clear and cross from that half (since enemies always cross the screen from left to right). So to further increase difficulty beyond level 5, a fourth rock will always appear somewhere in the rightmost column.
+
 ### Personal Programming Details
 This was my first attempt at using object-oriented design in JavaScript to create a program. There are classes for the enemies (the bug sprites), the player, the health units appearing at the bottom of the screen, and the gem.
 
@@ -48,3 +50,4 @@ I am not fond of the user sprites but they seem to fit the theme.
 ### Remaining Issues
 * The gems which appear in various levels are from image files which are rectangular, whereas the gems themselves have octagonal shapes. This makes the shapes appear incorrectly in the game.
 * I would have liked to have had the user's sprite do something more noticeable upon finishing a level, like rotating 360 degrees. I tried using the `.save()` and `.restore()` functions in conjunction with the `.rotate` function but was unable to make it work correctly.
+* Occasionally the board will be randomly set up so that there will be a gem or star visible but it will be impossible to obtain it because of rock obstructions and possibly also water (since upon reaching water, it cannot be left for the duration of the level). This kind of configuration ought to be avoided somehow.
