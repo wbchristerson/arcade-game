@@ -5,7 +5,12 @@
 </p>
 
 ### Running The Application
-The application can be run by clicking [here](https://wbchristerson.github.io/arcade-game/) or by following the below instructions to download to a hard drive:
+The application can be run by clicking [here](https://wbchristerson.github.io/arcade-game/). To download, you can clone the repository using this terminal command:
+```
+git clone https://github.com/wbchristerson/arcade-game.git
+```
+
+Alternatively, follow the instructions below to download to a hard drive:
 * Click the green "Clone or download" button above then choose "Download ZIP".
 * Find the folder `arcade-game-master` in your Downloads folder or wherever it was placed on your device.
 * Right click and choose "Extract All".
