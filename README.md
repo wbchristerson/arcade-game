@@ -43,7 +43,7 @@ The end page is very similar to the introductory page and congratulates both los
 To give the impression of increasing difficulty, the chance of each of three independent rocks appearing on screen increases up to level 5, after which time they will all always appear (though sometimes overlapping each other). Furthermore, one strategy to avoid losing lives is to wait for the right half of the screen to become clear and cross from that half (since enemies always cross the screen from left to right). So to further increase difficulty beyond level 5, a fourth rock will always appear somewhere in the rightmost column.
 
 ### Personal Programming Details
-This was my first attempt at using object-oriented design in JavaScript to create a program. There are classes for the enemies (the bug sprites), the player, the health units appearing at the bottom of the screen, and the gem.
+This was my first attempt at using object-oriented design in JavaScript to create a program. There are classes for the enemies (the bug sprites), the player, the health units appearing at the bottom of the screen, the game state, the rocks, and the gem/star.
 
 I am not fond of the user sprites but they seem to fit the theme.
 
